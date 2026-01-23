@@ -1,5 +1,5 @@
+import type { BlockRenderer, SectionRenderer } from "../types";
 import type { EditorPlugin } from "./types";
-import type { BlockRenderer, SectionRenderer } from "../editor/types";
 
 export const blockRenderers: Record<string, BlockRenderer> = {};
 export const sectionRenderers: Record<string, SectionRenderer> = {};

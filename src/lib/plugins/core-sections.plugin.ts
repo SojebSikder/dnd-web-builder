@@ -1,6 +1,5 @@
-import type { EditorPlugin } from "./types";
 import type { Section } from "../editor/types";
-import { renderBlocks } from "../editor";
+import { renderBlocks, type EditorPlugin } from "../editor";
 
 const CoreSectionsPlugin: EditorPlugin = {
   name: "Core Sections",

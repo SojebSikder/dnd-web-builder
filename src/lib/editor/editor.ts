@@ -1,5 +1,5 @@
 import type { PageJSON, Section, Block } from "./types";
-import { blockRenderers, sectionRenderers } from "../plugins/registry";
+import { blockRenderers, sectionRenderers } from "./plugin/registry";
 
 export class Editor {
   toolbar: HTMLElement;

@@ -1,4 +1,4 @@
-import type { EditorPlugin } from "./types";
+import type { EditorPlugin } from "../editor";
 import type { Block } from "../editor/types";
 
 const CoreBlocksPlugin: EditorPlugin = {

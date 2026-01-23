@@ -1,4 +1,4 @@
-import type { BlockRenderer, SectionRenderer } from "../editor/types";
+import type { BlockRenderer, SectionRenderer } from "../types";
 
 export type BlockPlugin = {
   type: string;
