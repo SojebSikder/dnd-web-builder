@@ -1,0 +1,47 @@
+import type { PageJSON } from "./lib/editor/types";
+
+export const pageData: PageJSON = {
+  order: ["hero", "content"],
+  sections: {
+    hero: {
+      id: "hero",
+      type: "image-banner",
+      settings: {
+        title: "Welcome",
+        subtitle: "Build pages visually",
+        image: "/rust.png",
+      },
+    },
+    content: {
+      id: "content",
+      type: "rich-text",
+      settings: {
+        heading: "About Us",
+      },
+      blocks: [
+        {
+          id: "b1",
+          type: "text",
+          settings: {
+            text: "We are building a modern block editor.",
+          },
+        },
+        {
+          id: "b2",
+          type: "image",
+          settings: {
+            src: "/rust.png",
+          },
+        },
+        {
+          id: "b3",
+          type: "button",
+          settings: {
+            label: "Contact",
+            href: "/contact",
+          },
+        },
+      ],
+    },
+  },
+};

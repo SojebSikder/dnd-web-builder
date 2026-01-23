@@ -1,0 +1,67 @@
+import type { EditorPlugin } from "./types";
+import type { Section } from "../editor/types";
+import { renderBlocks } from "../editor";
+
+const CoreSectionsPlugin: EditorPlugin = {
+  name: "Core Sections",
+  sections: [
+    {
+      type: "rich-text",
+      renderer: (section: Section): HTMLElement => {
+        const el = document.createElement("section");
+        el.className = "rich-text";
+
+        if (section.settings.heading) {
+          const h2 = document.createElement("h2");
+          h2.textContent = section.settings.heading;
+          el.appendChild(h2);
+        }
+
+        el.appendChild(renderBlocks(section.blocks));
+        return el;
+      },
+    },
+    {
+      type: "featured-collection",
+      renderer: (section: Section): HTMLElement => {
+        const el = document.createElement("section");
+        el.className = "featured-collection";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = section.settings.title || "Featured Collection";
+        el.appendChild(h2);
+
+        const placeholder = document.createElement("div");
+        placeholder.textContent = "🛒 Product preview (editor only)";
+        placeholder.style.opacity = "0.6";
+        el.appendChild(placeholder);
+
+        return el;
+      },
+    },
+    {
+      type: "contact-form",
+      renderer: (section: Section): HTMLElement => {
+        const el = document.createElement("section");
+        el.className = "contact-form";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = section.settings.heading || "Contact Us";
+        el.appendChild(h2);
+
+        const form = document.createElement("form");
+        form.innerHTML = `
+          <input type="text" placeholder="Name" /><br/>
+          <input type="email" placeholder="Email" /><br/>
+          <textarea placeholder="Message"></textarea><br/>
+          <button type="submit">Send</button>
+        `;
+
+        el.appendChild(form);
+        return el;
+      },
+    },
+  ],
+};
+
+export default CoreSectionsPlugin;
