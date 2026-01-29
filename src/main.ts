@@ -1,3 +1,4 @@
+import "./lib/style.css";
 import { pageData } from "./example-data";
 import { Editor } from "./lib/editor/editor";
 import CoreBlocksPlugin from "./lib/plugins/core-blocks.plugin";
@@ -16,3 +17,5 @@ registerPlugin(CoreBlocksPlugin);
 registerPlugin(QuoteBlockPlugin);
 // load page data
 editor.load(pageData);
+
+editor.initChooser();

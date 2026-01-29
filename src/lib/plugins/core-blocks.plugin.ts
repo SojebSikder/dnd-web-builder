@@ -28,7 +28,7 @@ const CoreBlocksPlugin: EditorPlugin = {
         const img = document.createElement("img");
         img.src = block.settings.src;
         img.alt = block.settings.alt || "";
-        img.style.maxWidth = "100%";
+        img.style.maxWidth = "40%";
         return img;
       },
       defaultSettings: {
@@ -38,6 +38,13 @@ const CoreBlocksPlugin: EditorPlugin = {
     },
     {
       type: "link",
+      settingsSchema: [
+        {
+          key: "label",
+          label: "Text",
+          type: "text",
+        },
+      ],
       renderer: (block: Block): HTMLElement => {
         const el = document.createElement("a");
         el.textContent = block.settings.label || "Button";

@@ -1,6 +1,8 @@
 import type { PageJSON, Section, Block, SettingSchema } from "./types";
 import {
   blockRenderers,
+  getAllBlockPlugins,
+  getAllSectionPlugins,
   getBlockPlugin,
   getSectionPlugin,
   sectionRenderers,
@@ -57,12 +59,65 @@ export class Editor {
 
     this.editor.appendChild(sectionEl);
 
+    // enable dragging
+    sectionEl.draggable = true;
+
+    this.setupSectionDrag(sectionEl);
+    this.editor.addEventListener("dragover", (e) => {
+      e.preventDefault();
+
+      const dragging = this.editor.querySelector(".dragging") as HTMLElement;
+      if (!dragging) return;
+
+      // Find section under cursor
+      const afterElement = this.getDragAfterElement(this.editor, e.clientY);
+      if (afterElement == null) {
+        this.editor.appendChild(dragging);
+      } else {
+        this.editor.insertBefore(dragging, afterElement);
+      }
+    });
+
+    this.editor.addEventListener("drop", (e) => {
+      e.preventDefault();
+
+      // Update pageData.order based on new DOM order
+      const sectionIds = Array.from(this.editor.children)
+        .filter((el) => el.classList.contains("editor-section"))
+        .map((el: HTMLElement) => el.dataset.sectionId!);
+
+      this.pageData.order = sectionIds;
+    });
+    // end dragging
+
     sectionEl.addEventListener("click", () => {
       this.selected = { type: "section", id: section.id };
 
       const plugin = getSectionPlugin(section.type);
       if (plugin) this.showSettings(plugin, section.settings);
     });
+  }
+  getDragAfterElement(
+    container: HTMLElement,
+    y: number,
+    selector = "editor-section",
+  ): HTMLElement | null {
+    const draggableElements = [
+      ...container.querySelectorAll(`.${selector}:not(.dragging)`),
+    ] as HTMLElement[];
+
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        } else {
+          return closest;
+        }
+      },
+      { offset: Number.NEGATIVE_INFINITY, element: null as HTMLElement | null },
+    ).element;
   }
 
   renderBlocks({ blocks }: { blocks?: Block[] }): HTMLElement {
@@ -91,9 +146,60 @@ export class Editor {
         const plugin = getBlockPlugin(block.type);
         if (plugin) this.showSettings(plugin, block.settings);
       });
+
+      blockEl.draggable = true;
+
+      this.setupSectionDrag(blockEl);
+
+      wrapper.addEventListener("dragover", (e) => {
+        e.preventDefault();
+
+        const dragging = wrapper.querySelector(".dragging") as HTMLElement;
+        if (!dragging) return;
+
+        const afterElement = this.getDragAfterElement(
+          wrapper,
+          e.clientY,
+          "editor-block",
+        );
+        if (afterElement == null) {
+          wrapper.appendChild(dragging);
+        } else {
+          wrapper.insertBefore(dragging, afterElement);
+        }
+      });
+
+      wrapper.addEventListener("drop", (e) => {
+        e.preventDefault();
+
+        const sectionId = blockEl.dataset.sectionId!;
+        const section = this.pageData.sections[sectionId];
+        if (!section) return;
+
+        const blockIds = Array.from(wrapper.children)
+          .filter((el) => el.classList.contains("editor-block"))
+          .map((el: HTMLElement) => el.dataset.blockId!);
+
+        section.blocks = blockIds.map(
+          (id) => section.blocks!.find((b) => b.id === id)!,
+        );
+      });
     });
 
     return wrapper;
+  }
+
+  private setupSectionDrag(sectionEl: HTMLElement) {
+    sectionEl.draggable = true;
+
+    sectionEl.addEventListener("dragstart", (e) => {
+      sectionEl.classList.add("dragging");
+      e.dataTransfer?.setData("text/plain", sectionEl.dataset.sectionId!);
+    });
+
+    sectionEl.addEventListener("dragend", () => {
+      sectionEl.classList.remove("dragging");
+    });
   }
 
   showSettings(
@@ -237,5 +343,121 @@ export class Editor {
       const block = section.blocks?.find((b) => b.id === id);
       if (block) return block;
     }
+  }
+
+  /**
+   * This used to add section/block elements to editor
+   */
+  initChooser() {
+    const sectionSelect = document.getElementById(
+      "section-chooser",
+    ) as HTMLSelectElement;
+    const blockSelect = document.getElementById(
+      "block-chooser",
+    ) as HTMLSelectElement;
+
+    // populate sections
+    getAllSectionPlugins().forEach((plugin) => {
+      const opt = document.createElement("option");
+      opt.value = plugin.type;
+      opt.textContent = plugin.type.replace(/-/g, " ");
+      sectionSelect.appendChild(opt);
+    });
+
+    sectionSelect.addEventListener("change", () => {
+      if (!sectionSelect.value) return;
+
+      this.addSection(sectionSelect.value);
+      sectionSelect.value = "";
+    });
+
+    // populate blocks
+    getAllBlockPlugins().forEach((plugin) => {
+      const opt = document.createElement("option");
+      opt.value = plugin.type;
+      opt.textContent = plugin.type.replace(/-/g, " ");
+      blockSelect.appendChild(opt);
+    });
+
+    blockSelect.addEventListener("change", () => {
+      if (
+        !blockSelect.value ||
+        !this.selected ||
+        this.selected.type !== "section"
+      )
+        return;
+
+      this.addBlock(this.selected.id, blockSelect.value);
+      blockSelect.value = "";
+    });
+  }
+
+  addSection(type: string) {
+    const plugin = getSectionPlugin(type);
+    if (!plugin) return;
+
+    // Generate a unique ID
+    const id = `section-${Date.now()}`;
+
+    const newSection: Section = {
+      id,
+      type: plugin.type,
+      settings: {},
+      blocks: [],
+    };
+
+    // Add to pageData
+    this.pageData.sections[id] = newSection;
+    this.pageData.order.push(id);
+
+    // Render and append
+    const el = plugin.renderer(newSection, this);
+    el.classList.add("editor-section");
+    el.dataset.sectionId = id;
+    el.dataset.sectionType = plugin.type;
+
+    this.editor.appendChild(el);
+
+    // Select newly added section
+    this.selected = { type: "section", id };
+    this.showSettings(plugin, newSection.settings);
+
+    this.setupSectionDrag(el);
+  }
+
+  addBlock(sectionId: string, type: string) {
+    const plugin = getBlockPlugin(type);
+    if (!plugin) return;
+
+    const section = this.pageData.sections[sectionId];
+    if (!section) return;
+
+    const id = `block-${Date.now()}`;
+
+    const newBlock: Block = {
+      id,
+      type: plugin.type,
+      settings: {},
+    };
+
+    section.blocks = section.blocks || [];
+    section.blocks.push(newBlock);
+
+    // Render block and append to section DOM
+    const sectionEl = this.editor.querySelector(
+      `[data-section-id="${sectionId}"]`,
+    ) as HTMLElement;
+    const wrapper =
+      sectionEl.querySelector(".editor-blocks") ||
+      this.renderBlocks({ blocks: [] });
+    wrapper.appendChild(plugin.renderer(newBlock));
+
+    if (!sectionEl.contains(wrapper)) {
+      sectionEl.appendChild(wrapper);
+    }
+
+    // Select new block
+    this.selected = { type: "block", id };
+    this.showSettings(plugin, newBlock.settings);
   }
 }

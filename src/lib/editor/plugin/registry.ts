@@ -43,3 +43,11 @@ export function getBlockPlugin(type: string) {
 export function getSectionPlugin(type: string) {
   return sectionPlugins[type];
 }
+
+export function getAllSectionPlugins(): SectionPlugin[] {
+  return Object.values(sectionPlugins);
+}
+
+export function getAllBlockPlugins(): BlockPlugin[] {
+  return Object.values(blockPlugins);
+}

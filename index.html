@@ -8,10 +8,22 @@
     </head>
     <body>
         <div id="app">
-            <div id="toolbar"></div>
-            <div id="editor"></div>
-            <div id="settings-panel"></div>
+            <div id="toolbar">
+                <select id="section-chooser">
+                    <option value="">Add Section...</option>
+                </select>
+
+                <select id="block-chooser">
+                    <option value="">Add Block...</option>
+                </select>
+            </div>
+
+            <div class="main-content">
+                <div id="editor"></div>
+                <div id="settings-panel"></div>
+            </div>
         </div>
+
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>

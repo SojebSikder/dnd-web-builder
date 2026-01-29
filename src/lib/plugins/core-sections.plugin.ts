@@ -47,6 +47,48 @@ const CoreSectionsPlugin: EditorPlugin = {
     },
     {
       type: "contact-form",
+      settingsSchema: [
+        {
+          key: "heading",
+          label: "Text",
+          type: "text",
+        },
+        {
+          key: "buttonText",
+          label: "Button Text",
+          type: "text",
+        },
+        {
+          key: "namePlaceholder",
+          label: "Name Placeholder",
+          type: "text",
+        },
+        {
+          key: "emailPlaceholder",
+          label: "Email Placeholder",
+          type: "text",
+        },
+        {
+          key: "messagePlaceholder",
+          label: "Message Placeholder",
+          type: "text",
+        },
+        {
+          key: "buttonColor",
+          label: "Button Color",
+          type: "color",
+        },
+        {
+          key: "buttonBackgroundColor",
+          label: "Button Background Color",
+          type: "color",
+        },
+        {
+          key: "buttonBorderColor",
+          label: "Button Border Color",
+          type: "color",
+        },
+      ],
       renderer: (section: Section): HTMLElement => {
         const el = document.createElement("section");
         el.className = "contact-form";
@@ -57,10 +99,14 @@ const CoreSectionsPlugin: EditorPlugin = {
 
         const form = document.createElement("form");
         form.innerHTML = `
-          <input type="text" placeholder="Name" /><br/>
-          <input type="email" placeholder="Email" /><br/>
-          <textarea placeholder="Message"></textarea><br/>
-          <button type="submit">Send</button>
+          <input type="text" placeholder="${section.settings.namePlaceholder || "Name"}" /><br/>
+          <input type="email" placeholder="${section.settings.emailPlaceholder || "Email"}" /><br/>
+          <textarea placeholder="${section.settings.messagePlaceholder || "Message"}"></textarea><br/>
+          <button type="submit"
+          style="background-color: ${section.settings.buttonBackgroundColor || "#007bff"};
+          border-color: ${section.settings.buttonBorderColor || "#007bff"};">
+          ${section.settings.buttonText || "Send"}
+          </button>
         `;
 
         el.appendChild(form);

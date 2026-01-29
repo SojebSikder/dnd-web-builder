@@ -1,0 +1,160 @@
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* App container */
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Toolbar */
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#toolbar select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* Editor + Settings container */
+#editor,
+#settings-panel {
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 16px;
+    padding: 16px;
+}
+
+/* Editor workspace */
+#editor {
+    flex: 2;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Sections */
+.editor-section {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    background: #fafafa;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        border-color 0.2s;
+}
+
+.editor-section:hover {
+    background: #f0f8ff;
+    border-color: #a0c4ff;
+}
+
+/* Blocks */
+.editor-blocks {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.editor-block {
+    border: 1px dashed #bbb;
+    border-radius: 4px;
+    padding: 6px 8px;
+    background: #fff;
+    cursor: pointer;
+    transition:
+        background 0.2s,
+        border-color 0.2s;
+}
+
+.editor-block:hover {
+    background: #f9f9f9;
+    border-color: #90e0ef;
+}
+
+/* Settings panel */
+#settings-panel {
+    flex: 1;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.editor-settings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.editor-settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.editor-settings-field label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.editor-settings-field input,
+.editor-settings-field select {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.editor-settings-field input[type="checkbox"] {
+    width: auto;
+}
+
+/* Dragging visual feedback */
+.editor-section.dragging,
+.editor-block.dragging {
+    opacity: 0.5;
+    border-color: #0070f3;
+    background: #e6f0ff;
+}
+
+.editor-section.placeholder,
+.editor-block.placeholder {
+    border: 2px dashed #0070f3;
+    background: #f0f8ff;
+    height: 50px; /* optional for blocks */
+}
