@@ -7,6 +7,13 @@ const QuoteBlockPlugin: EditorPlugin = {
   blocks: [
     {
       type: "quote",
+      settingsSchema: [
+        {
+          key: "text",
+          label: "Text",
+          type: "text",
+        },
+      ],
       renderer: (block: Block) => {
         const el = document.createElement("blockquote");
         el.textContent = block.settings.text || "Quote...";

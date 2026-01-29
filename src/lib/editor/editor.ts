@@ -8,9 +8,18 @@ import {
 import type { BlockPlugin, SectionPlugin } from "./plugin";
 
 export class Editor {
-  toolbar: HTMLElement;
-  editor: HTMLElement;
-  settingsContainer: HTMLElement;
+  // toolbar element
+  private toolbar: HTMLElement;
+  private editor: HTMLElement;
+  private settingsContainer: HTMLElement;
+
+  // track diff of section/block
+  private selected:
+    | { type: "section"; id: string }
+    | { type: "block"; id: string }
+    | null = null;
+
+  private pageData: PageJSON;
 
   constructor(
     toolbar: HTMLElement,
@@ -23,10 +32,11 @@ export class Editor {
   }
 
   load(jsonData: PageJSON) {
+    this.pageData = jsonData;
     this.editor.innerHTML = "";
 
-    jsonData.order.forEach((sectionId) => {
-      const section = jsonData.sections[sectionId];
+    this.pageData.order.forEach((sectionId) => {
+      const section = this.pageData.sections[sectionId];
       if (!section) return;
 
       this.loadSection(section, this);
@@ -48,6 +58,8 @@ export class Editor {
     this.editor.appendChild(sectionEl);
 
     sectionEl.addEventListener("click", () => {
+      this.selected = { type: "section", id: section.id };
+
       const plugin = getSectionPlugin(section.type);
       if (plugin) this.showSettings(plugin, section.settings);
     });
@@ -73,6 +85,9 @@ export class Editor {
 
       blockEl.addEventListener("click", (e) => {
         e.stopPropagation();
+
+        this.selected = { type: "block", id: block.id };
+
         const plugin = getBlockPlugin(block.type);
         if (plugin) this.showSettings(plugin, block.settings);
       });
@@ -153,6 +168,8 @@ export class Editor {
         }
 
         settings[field.key] = value;
+
+        this.refreshSelected();
       });
 
       input.id = field.key;
@@ -163,5 +180,62 @@ export class Editor {
     });
 
     return panel;
+  }
+
+  refreshSelected() {
+    if (!this.selected) return;
+
+    if (this.selected.type === "section") {
+      const el = this.editor.querySelector(
+        `[data-section-id="${this.selected.id}"]`,
+      ) as HTMLElement | null;
+      if (!el) return;
+
+      const sectionType = el.dataset.sectionType!;
+      const plugin = getSectionPlugin(sectionType);
+      if (!plugin) return;
+
+      const sectionData = this.findSectionById(this.selected.id);
+      if (!sectionData) return;
+
+      const newEl = plugin.renderer(sectionData, this);
+      newEl.classList.add("editor-section");
+      newEl.dataset.sectionId = sectionData.id;
+      newEl.dataset.sectionType = sectionData.type;
+
+      el.replaceWith(newEl);
+    }
+
+    if (this.selected.type === "block") {
+      const el = this.editor.querySelector(
+        `[data-block-id="${this.selected.id}"]`,
+      ) as HTMLElement | null;
+      if (!el) return;
+
+      const blockType = el.dataset.blockType!;
+      const plugin = getBlockPlugin(blockType);
+      if (!plugin) return;
+
+      const blockData = this.findBlockById(this.selected.id);
+      if (!blockData) return;
+
+      const newEl = plugin.renderer(blockData);
+      newEl.classList.add("editor-block");
+      newEl.dataset.blockId = blockData.id;
+      newEl.dataset.blockType = blockData.type;
+
+      el.replaceWith(newEl);
+    }
+  }
+
+  findSectionById(id: string) {
+    return Object.values(this.pageData.sections).find((s) => s.id === id);
+  }
+
+  findBlockById(id: string) {
+    for (const section of Object.values(this.pageData.sections)) {
+      const block = section.blocks?.find((b) => b.id === id);
+      if (block) return block;
+    }
   }
 }

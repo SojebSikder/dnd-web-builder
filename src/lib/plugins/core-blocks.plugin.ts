@@ -52,15 +52,21 @@ const CoreBlocksPlugin: EditorPlugin = {
     },
     {
       type: "button",
+      settingsSchema: [
+        {
+          key: "label",
+          label: "Text",
+          type: "text",
+        },
+      ],
+      defaultSettings: {
+        label: "Click me",
+      },
       renderer: (block: Block): HTMLElement => {
         const el = document.createElement("button");
-        // el.textContent = block.settings.label || "Button";
         el.textContent = block.settings.label || "Button";
         el.className = "btn";
         return el;
-      },
-      defaultSettings: {
-        label: "Click me",
       },
     },
   ],

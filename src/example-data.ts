@@ -48,6 +48,13 @@ export const pageData: PageJSON = {
             label: "Click me",
           },
         },
+        {
+          id: "b6",
+          type: "quote",
+          settings: {
+            text: "Hello world, this is quote",
+          },
+        },
       ],
     },
   },
