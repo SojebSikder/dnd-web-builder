@@ -1,12 +1,19 @@
 import type { Section } from "../editor/types";
-import { renderBlocks, type EditorPlugin } from "../editor";
+import { Editor, type EditorPlugin } from "../editor";
 
 const CoreSectionsPlugin: EditorPlugin = {
   name: "Core Sections",
   sections: [
     {
       type: "rich-text",
-      renderer: (section: Section): HTMLElement => {
+      settingsSchema: [
+        {
+          key: "heading",
+          label: "Heading",
+          type: "text",
+        },
+      ],
+      renderer: (section: Section, editor: Editor): HTMLElement => {
         const el = document.createElement("section");
         el.className = "rich-text";
 
@@ -16,7 +23,7 @@ const CoreSectionsPlugin: EditorPlugin = {
           el.appendChild(h2);
         }
 
-        el.appendChild(renderBlocks(section.blocks));
+        el.appendChild(editor.renderBlocks({ blocks: section.blocks }));
         return el;
       },
     },

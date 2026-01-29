@@ -34,11 +34,18 @@ export const pageData: PageJSON = {
           },
         },
         {
-          id: "b3",
-          type: "button",
+          id: "b4",
+          type: "link",
           settings: {
             label: "Contact",
             href: "/contact",
+          },
+        },
+        {
+          id: "b5",
+          type: "button",
+          settings: {
+            label: "Click me",
           },
         },
       ],

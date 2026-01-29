@@ -7,8 +7,9 @@ import { registerPlugin } from "./lib/editor/plugin/registry";
 
 const toolbar = document.getElementById("toolbar");
 const editorContainer = document.getElementById("editor");
+const SettingsContainer = document.getElementById("settings-panel");
 
-const editor = new Editor(toolbar, editorContainer);
+const editor = new Editor(toolbar, editorContainer, SettingsContainer);
 // core plugins
 registerPlugin(CoreSectionsPlugin);
 registerPlugin(CoreBlocksPlugin);

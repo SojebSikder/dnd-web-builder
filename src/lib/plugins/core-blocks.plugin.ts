@@ -14,6 +14,13 @@ const CoreBlocksPlugin: EditorPlugin = {
       defaultSettings: {
         text: "Your text here",
       },
+      settingsSchema: [
+        {
+          key: "text",
+          label: "Text",
+          type: "text",
+        },
+      ],
     },
     {
       type: "image",
@@ -30,17 +37,30 @@ const CoreBlocksPlugin: EditorPlugin = {
       },
     },
     {
-      type: "button",
+      type: "link",
       renderer: (block: Block): HTMLElement => {
-        const a = document.createElement("a");
-        a.textContent = block.settings.label || "Button";
-        a.href = block.settings.href || "#";
-        a.className = "btn";
-        return a;
+        const el = document.createElement("a");
+        el.textContent = block.settings.label || "Button";
+        el.href = block.settings.href || "#";
+        el.className = "link";
+        return el;
       },
       defaultSettings: {
         label: "Click me",
         href: "#",
+      },
+    },
+    {
+      type: "button",
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("button");
+        // el.textContent = block.settings.label || "Button";
+        el.textContent = block.settings.label || "Button";
+        el.className = "btn";
+        return el;
+      },
+      defaultSettings: {
+        label: "Click me",
       },
     },
   ],

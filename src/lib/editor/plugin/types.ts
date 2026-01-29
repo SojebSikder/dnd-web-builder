@@ -1,15 +1,17 @@
-import type { BlockRenderer, SectionRenderer } from "../types";
+import type { BlockRenderer, SectionRenderer, SettingSchema } from "../types";
 
 export type BlockPlugin = {
   type: string;
   renderer: BlockRenderer;
   defaultSettings?: Record<string, any>;
+  settingsSchema?: SettingSchema[];
 };
 
 export type SectionPlugin = {
   type: string;
   renderer: SectionRenderer;
   defaultSettings?: Record<string, any>;
+  settingsSchema?: SettingSchema[];
 };
 
 export type EditorPlugin = {

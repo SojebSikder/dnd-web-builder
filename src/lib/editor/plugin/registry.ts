@@ -1,5 +1,8 @@
 import type { BlockRenderer, SectionRenderer } from "../types";
-import type { EditorPlugin } from "./types";
+import type { BlockPlugin, EditorPlugin, SectionPlugin } from "./types";
+
+const blockPlugins: Record<string, BlockPlugin> = {};
+const sectionPlugins: Record<string, SectionPlugin> = {};
 
 export const blockRenderers: Record<string, BlockRenderer> = {};
 export const sectionRenderers: Record<string, SectionRenderer> = {};
@@ -10,7 +13,11 @@ export function registerPlugin(plugin: EditorPlugin) {
       console.warn(`Block already registered: ${block.type}`);
       return;
     }
+
+    // Save renderer
     blockRenderers[block.type] = block.renderer;
+    // Save full plugin for settings lookup
+    blockPlugins[block.type] = block;
   });
 
   plugin.sections?.forEach((section) => {
@@ -18,8 +25,21 @@ export function registerPlugin(plugin: EditorPlugin) {
       console.warn(`Section already registered: ${section.type}`);
       return;
     }
+
+    // Save renderer
     sectionRenderers[section.type] = section.renderer;
+    // Save full plugin for settings lookup
+    sectionPlugins[section.type] = section;
   });
 
   console.log(`Plugin loaded: ${plugin.name}`);
+}
+
+// Utility to get plugin by type (optional)
+export function getBlockPlugin(type: string) {
+  return blockPlugins[type];
+}
+
+export function getSectionPlugin(type: string) {
+  return sectionPlugins[type];
 }
