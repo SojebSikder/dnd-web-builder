@@ -1,8 +1,13 @@
 import type { PageJSON } from "../lib/editor/types";
 
 export const pageData: PageJSON = {
-  order: ["content"],
+  order: ["header", "content"],
   sections: {
+    header: {
+      id: "header",
+      type: "container",
+      settings: {},
+    },
     content: {
       id: "content",
       type: "rich-text",

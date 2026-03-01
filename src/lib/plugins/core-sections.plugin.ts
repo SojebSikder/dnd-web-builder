@@ -5,6 +5,125 @@ const CoreSectionsPlugin: EditorPlugin = {
   name: "Core Sections",
   sections: [
     {
+      type: "container",
+      settingsSchema: [
+        {
+          key: "backgroundColor",
+          label: "Background Color",
+          type: "color",
+        },
+        {
+          key: "height",
+          label: "Height",
+          type: "text",
+        },
+        {
+          key: "width",
+          label: "Width",
+          type: "text",
+        },
+        {
+          key: "padding",
+          label: "Padding",
+          type: "text",
+        },
+        {
+          key: "margin",
+          label: "Margin",
+          type: "text",
+        },
+        {
+          key: "borderRadius",
+          label: "Border Radius",
+          type: "text",
+        },
+        {
+          key: "borderWidth",
+          label: "Border Width",
+          type: "text",
+        },
+        {
+          key: "borderColor",
+          label: "Border Color",
+          type: "color",
+        },
+        {
+          key: "display",
+          label: "Display",
+          type: "text",
+        },
+        // position
+        {
+          key: "position",
+          label: "Position",
+          type: "text",
+        },
+        {
+          key: "top",
+          label: "Top",
+          type: "text",
+        },
+        {
+          key: "right",
+          label: "Right",
+          type: "text",
+        },
+        {
+          key: "left",
+          label: "Left",
+          type: "text",
+        },
+        {
+          key: "bottom",
+          label: "Bottom",
+          type: "text",
+        },
+      ],
+      renderer: (section: Section, editor: Editor): HTMLElement => {
+        const el = document.createElement("section");
+        el.className = "container";
+
+        if (section.settings.backgroundColor) {
+          el.style.backgroundColor = section.settings.backgroundColor;
+        }
+        if (section.settings.height) {
+          el.style.height = `${section.settings.height}`;
+        }
+        if (section.settings.width) {
+          el.style.width = `${section.settings.width}`;
+        }
+        if (section.settings.padding) {
+          el.style.padding = `${section.settings.padding}`;
+        }
+        if (section.settings.margin) {
+          el.style.margin = `${section.settings.margin}`;
+        }
+        if (section.settings.borderRadius) {
+          el.style.borderRadius = `${section.settings.borderRadius}`;
+        }
+        if (section.settings.borderWidth) {
+          el.style.borderWidth = `${section.settings.borderWidth}`;
+        }
+        if (section.settings.borderColor) {
+          el.style.borderColor = section.settings.borderColor;
+        }
+        // display
+        if (section.settings.display) {
+          el.style.display = section.settings.display;
+        }
+        // positions
+        if (section.settings.position) {
+          el.style.position = section.settings.position;
+        }
+        if (section.settings.top) {
+          el.style.top = section.settings.top;
+        }
+
+        el.appendChild(editor.renderBlocks({ blocks: section.blocks }));
+        return el;
+      },
+    },
+    {
       type: "rich-text",
       settingsSchema: [
         {
