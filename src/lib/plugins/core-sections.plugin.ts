@@ -29,6 +29,18 @@ const CoreSectionsPlugin: EditorPlugin = {
     },
     {
       type: "featured-collection",
+      settingsSchema: [
+        {
+          key: "title",
+          label: "Title",
+          type: "text",
+        },
+        {
+          key: "textContent",
+          label: "Description",
+          type: "text",
+        },
+      ],
       renderer: (section: Section): HTMLElement => {
         const el = document.createElement("section");
         el.className = "featured-collection";
@@ -38,7 +50,8 @@ const CoreSectionsPlugin: EditorPlugin = {
         el.appendChild(h2);
 
         const placeholder = document.createElement("div");
-        placeholder.textContent = "🛒 Product preview (editor only)";
+        placeholder.textContent =
+          section.settings.textContent || "🛒 Product preview (editor only)";
         placeholder.style.opacity = "0.6";
         el.appendChild(placeholder);
 
@@ -93,23 +106,48 @@ const CoreSectionsPlugin: EditorPlugin = {
         const el = document.createElement("section");
         el.className = "contact-form";
 
+        // Heading
         const h2 = document.createElement("h2");
         h2.textContent = section.settings.heading || "Contact Us";
         el.appendChild(h2);
 
+        // Form
         const form = document.createElement("form");
-        form.innerHTML = `
-          <input type="text" placeholder="${section.settings.namePlaceholder || "Name"}" /><br/>
-          <input type="email" placeholder="${section.settings.emailPlaceholder || "Email"}" /><br/>
-          <textarea placeholder="${section.settings.messagePlaceholder || "Message"}"></textarea><br/>
-          <button type="submit"
-          style="background-color: ${section.settings.buttonBackgroundColor || "#007bff"};
-          border-color: ${section.settings.buttonBorderColor || "#007bff"};">
-          ${section.settings.buttonText || "Send"}
-          </button>
-        `;
+
+        // Name input
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.placeholder = section.settings.namePlaceholder || "Name";
+        form.appendChild(nameInput);
+        form.appendChild(document.createElement("br"));
+
+        // Email input
+        const emailInput = document.createElement("input");
+        emailInput.type = "email";
+        emailInput.placeholder = section.settings.emailPlaceholder || "Email";
+        form.appendChild(emailInput);
+        form.appendChild(document.createElement("br"));
+
+        // Message textarea
+        const messageTextarea = document.createElement("textarea");
+        messageTextarea.placeholder =
+          section.settings.messagePlaceholder || "Message";
+        form.appendChild(messageTextarea);
+        form.appendChild(document.createElement("br"));
+
+        // Submit button
+        const button = document.createElement("button");
+        button.type = "submit";
+        button.textContent = section.settings.buttonText || "Send";
+        button.style.color = section.settings.buttonColor || "#fff";
+        button.style.backgroundColor =
+          section.settings.buttonBackgroundColor || "#007bff";
+        button.style.borderColor =
+          section.settings.buttonBorderColor || "#007bff";
+        form.appendChild(button);
 
         el.appendChild(form);
+
         return el;
       },
     },

@@ -134,6 +134,7 @@ export class Editor {
       if (plugin) this.showSettings(plugin, section.settings);
     });
   }
+
   getDragAfterElement(
     container: HTMLElement,
     y: number,
@@ -320,6 +321,8 @@ export class Editor {
       wrapper.appendChild(label);
       wrapper.appendChild(input);
       panel.appendChild(wrapper);
+
+      this.refreshSelected();
     });
 
     return panel;

@@ -1,5 +1,5 @@
 import "./lib/style.css";
-import { pageData } from "./example-data";
+import { pageData } from "./pages/page-data";
 import { Editor } from "./lib/editor/editor";
 import CoreBlocksPlugin from "./lib/plugins/core-blocks.plugin";
 import CoreSectionsPlugin from "./lib/plugins/core-sections.plugin";
