@@ -207,3 +207,16 @@ body {
 .design-mode select {
     pointer-events: none;
 }
+
+#toolbar {
+    padding: 8px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    gap: 8px;
+}
+
+#toolbar button {
+    padding: 4px 12px;
+    cursor: pointer;
+}

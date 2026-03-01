@@ -601,4 +601,70 @@ export class Editor {
     this.selected = { type: "block", id };
     this.showSettings(plugin, newBlock.settings);
   }
+
+  /**
+   * Delete a section by ID
+   */
+  deleteSection(sectionId: string) {
+    const sectionEl = this.editor.querySelector(
+      `[data-section-id="${sectionId}"]`,
+    ) as HTMLElement | null;
+    if (sectionEl) sectionEl.remove();
+
+    // Remove from pageData
+    delete this.pageData.sections[sectionId];
+    this.pageData.order = this.pageData.order.filter((id) => id !== sectionId);
+
+    // Clear selection if it was the deleted section
+    if (this.selected?.type === "section" && this.selected.id === sectionId) {
+      this.selected = null;
+      this.settingsContainer.innerHTML = "";
+    }
+  }
+
+  /**
+   * Delete a block by ID
+   */
+  deleteBlock(blockId: string) {
+    // Find the section containing this block
+    for (const section of Object.values(this.pageData.sections)) {
+      const blockIndex = section.blocks?.findIndex((b) => b.id === blockId);
+      if (blockIndex === undefined || blockIndex === -1) continue;
+
+      // Remove block from pageData
+      section.blocks!.splice(blockIndex, 1);
+
+      // Remove block element from DOM
+      const sectionEl = this.editor.querySelector(
+        `[data-section-id="${section.id}"]`,
+      ) as HTMLElement | null;
+      if (!sectionEl) return;
+
+      const blockEl = sectionEl.querySelector(
+        `[data-block-id="${blockId}"]`,
+      ) as HTMLElement | null;
+      if (blockEl) blockEl.remove();
+
+      // Clear selection if it was the deleted block
+      if (this.selected?.type === "block" && this.selected.id === blockId) {
+        this.selected = null;
+        this.settingsContainer.innerHTML = "";
+      }
+
+      break; // block found and deleted
+    }
+  }
+
+  /**
+   * Delete the currently selected section or block
+   */
+  deleteSelected() {
+    if (!this.selected) return;
+
+    if (this.selected.type === "section") {
+      this.deleteSection(this.selected.id);
+    } else if (this.selected.type === "block") {
+      this.deleteBlock(this.selected.id);
+    }
+  }
 }

@@ -18,4 +18,10 @@ registerPlugin(QuoteBlockPlugin);
 // load page data
 editor.load(pageData);
 
+// Wire the delete button
+const deleteBtn = document.getElementById("delete-btn")!;
+deleteBtn.addEventListener("click", () => {
+  editor.deleteSelected();
+});
+
 editor.initChooser();
