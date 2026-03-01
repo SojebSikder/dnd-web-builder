@@ -341,11 +341,22 @@ export class Editor {
       const sectionData = this.findSectionById(this.selected.id);
       if (!sectionData) return;
 
+      // Render new section element
       const newEl = plugin.renderer(sectionData, this);
       newEl.classList.add("editor-section");
       newEl.dataset.sectionId = sectionData.id;
       newEl.dataset.sectionType = sectionData.type;
 
+      // Re-attach drag events
+      this.setupSectionDrag(newEl);
+
+      // Re-attach click to select
+      newEl.addEventListener("click", () => {
+        this.selected = { type: "section", id: sectionData.id };
+        this.showSettings(plugin, sectionData.settings);
+      });
+
+      // Replace old element with new
       el.replaceWith(newEl);
     }
 
@@ -362,11 +373,23 @@ export class Editor {
       const blockData = this.findBlockById(this.selected.id);
       if (!blockData) return;
 
+      // Render new block element
       const newEl = plugin.renderer(blockData);
       newEl.classList.add("editor-block");
       newEl.dataset.blockId = blockData.id;
       newEl.dataset.blockType = blockData.type;
 
+      // Re-attach drag events
+      this.setupSectionDrag(newEl);
+
+      // Re-attach click to select
+      newEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.selected = { type: "block", id: blockData.id };
+        this.showSettings(plugin, blockData.settings);
+      });
+
+      // Replace old element with new
       el.replaceWith(newEl);
     }
   }
