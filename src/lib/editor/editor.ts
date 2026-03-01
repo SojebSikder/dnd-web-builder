@@ -21,6 +21,7 @@ export class Editor {
     | { type: "block"; id: string }
     | null = null;
 
+  private designMode = true; // toggle this
   private pageData: PageJSON;
 
   constructor(
@@ -31,6 +32,42 @@ export class Editor {
     this.toolbar = toolbar;
     this.editor = editor;
     this.settingsContainer = settingsContainer;
+
+    // handle design mode events
+    this.editor.addEventListener("click", (e) => {
+      if (!this.designMode) return;
+
+      const target = e.target as HTMLElement;
+
+      // Prevent link navigation
+      if (target.closest("a")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      // Prevent button actions
+      if (target.closest("button")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
+
+    this.editor.addEventListener("submit", (e) => {
+      if (!this.designMode) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  }
+
+  setDesignMode(enabled: boolean) {
+    this.designMode = enabled;
+
+    if (enabled) {
+      this.editor.classList.add("design-mode");
+    } else {
+      this.editor.classList.remove("design-mode");
+    }
   }
 
   load(jsonData: PageJSON) {
@@ -349,46 +386,74 @@ export class Editor {
    * This used to add section/block elements to editor
    */
   initChooser() {
-    const sectionSelect = document.getElementById(
-      "section-chooser",
-    ) as HTMLSelectElement;
-    const blockSelect = document.getElementById(
-      "block-chooser",
-    ) as HTMLSelectElement;
+    const sectionList = document.getElementById("section-list")!;
+    const blockList = document.getElementById("block-list")!;
 
-    // populate sections
+    // Clear existing
+    sectionList.innerHTML = "";
+    blockList.innerHTML = "";
+
+    // Sections
     getAllSectionPlugins().forEach((plugin) => {
-      const opt = document.createElement("option");
-      opt.value = plugin.type;
-      opt.textContent = plugin.type.replace(/-/g, " ");
-      sectionSelect.appendChild(opt);
+      const item = this.createPluginItem("section", plugin.type);
+      sectionList.appendChild(item);
     });
 
-    sectionSelect.addEventListener("change", () => {
-      if (!sectionSelect.value) return;
-
-      this.addSection(sectionSelect.value);
-      sectionSelect.value = "";
-    });
-
-    // populate blocks
+    // Blocks
     getAllBlockPlugins().forEach((plugin) => {
-      const opt = document.createElement("option");
-      opt.value = plugin.type;
-      opt.textContent = plugin.type.replace(/-/g, " ");
-      blockSelect.appendChild(opt);
+      const item = this.createPluginItem("block", plugin.type);
+      blockList.appendChild(item);
     });
 
-    blockSelect.addEventListener("change", () => {
-      if (
-        !blockSelect.value ||
-        !this.selected ||
-        this.selected.type !== "section"
-      )
-        return;
+    this.setupDropZones();
+  }
 
-      this.addBlock(this.selected.id, blockSelect.value);
-      blockSelect.value = "";
+  private createPluginItem(
+    kind: "section" | "block",
+    pluginType: string,
+  ): HTMLElement {
+    const item = document.createElement("div");
+    item.className = "plugin-item";
+    item.textContent = pluginType.replace(/-/g, " ");
+
+    item.draggable = true;
+
+    item.addEventListener("dragstart", (e) => {
+      e.dataTransfer?.setData("type", kind);
+      e.dataTransfer?.setData("plugin", pluginType);
+    });
+
+    return item;
+  }
+  private setupDropZones() {
+    this.editor.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    this.editor.addEventListener("drop", (e) => {
+      e.preventDefault();
+
+      const type = e.dataTransfer?.getData("type");
+      const pluginType = e.dataTransfer?.getData("plugin");
+
+      if (!type || !pluginType) return;
+
+      if (type === "section") {
+        this.addSection(pluginType);
+        return;
+      }
+
+      if (type === "block") {
+        const target = e.target as HTMLElement;
+        const sectionEl = target.closest(
+          "[data-section-id]",
+        ) as HTMLElement | null;
+
+        if (!sectionEl) return;
+
+        const sectionId = sectionEl.dataset.sectionId!;
+        this.addBlock(sectionId, pluginType);
+      }
     });
   }
 
@@ -443,18 +508,34 @@ export class Editor {
     section.blocks = section.blocks || [];
     section.blocks.push(newBlock);
 
-    // Render block and append to section DOM
+    const blockEl = plugin.renderer(newBlock);
+
+    blockEl.classList.add("editor-block");
+    blockEl.dataset.blockId = id;
+    blockEl.dataset.blockType = plugin.type;
+
+    blockEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.selected = { type: "block", id };
+      this.showSettings(plugin, newBlock.settings);
+    });
+
+    this.setupSectionDrag(blockEl);
+
     const sectionEl = this.editor.querySelector(
       `[data-section-id="${sectionId}"]`,
     ) as HTMLElement;
-    const wrapper =
-      sectionEl.querySelector(".editor-blocks") ||
-      this.renderBlocks({ blocks: [] });
-    wrapper.appendChild(plugin.renderer(newBlock));
 
-    if (!sectionEl.contains(wrapper)) {
+    let wrapper = sectionEl.querySelector(
+      ".editor-blocks",
+    ) as HTMLElement | null;
+
+    if (!wrapper) {
+      wrapper = this.renderBlocks({ blocks: [] });
       sectionEl.appendChild(wrapper);
     }
+
+    wrapper.appendChild(blockEl);
 
     // Select new block
     this.selected = { type: "block", id };

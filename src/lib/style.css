@@ -37,14 +37,49 @@ body {
     cursor: pointer;
 }
 
-/* Editor + Settings container */
-#editor,
-#settings-panel {
-    padding: 16px;
-    background: #fff;
-    border-radius: 8px;
+/* Layout */
+.layout {
+    display: flex;
+    height: 100vh;
 }
 
+/* Sidebar */
+#sidebar {
+    width: 250px;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    background: #f9f9f9;
+    overflow-y: auto;
+}
+
+.plugin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.plugin-item {
+    padding: 8px 10px;
+    background: white;
+    border: 1px solid #ccc;
+    cursor: grab;
+    user-select: none;
+    border-radius: 6px;
+    transition:
+        background 0.2s,
+        transform 0.2s;
+}
+
+.plugin-item:hover {
+    background: #f0f8ff;
+}
+
+.plugin-item:active {
+    cursor: grabbing;
+}
+
+/* Main content */
 .main-content {
     display: flex;
     flex: 1;
@@ -53,9 +88,10 @@ body {
     padding: 16px;
 }
 
-/* Editor workspace */
+/* Editor */
 #editor {
     flex: 2;
+    padding: 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -74,7 +110,9 @@ body {
     cursor: pointer;
     transition:
         background 0.2s,
-        border-color 0.2s;
+        border-color 0.2s,
+        transform 0.2s;
+    min-height: 50px;
 }
 
 .editor-section:hover {
@@ -98,7 +136,9 @@ body {
     cursor: pointer;
     transition:
         background 0.2s,
-        border-color 0.2s;
+        border-color 0.2s,
+        transform 0.2s;
+    min-height: 40px;
 }
 
 .editor-block:hover {
@@ -106,12 +146,27 @@ body {
     border-color: #90e0ef;
 }
 
+/* Dragging feedback */
+.editor-section.dragging,
+.editor-block.dragging {
+    opacity: 0.5;
+    border-color: #0070f3;
+    background: #e6f0ff;
+}
+
+.editor-section.placeholder,
+.editor-block.placeholder {
+    border: 2px dashed #0070f3;
+    background: #f0f8ff;
+}
+
 /* Settings panel */
 #settings-panel {
     flex: 1;
+    padding: 10px;
     overflow-y: auto;
     background: #fff;
-    border: 1px solid #ddd;
+    border-left: 1px solid #ddd;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -144,17 +199,11 @@ body {
     width: auto;
 }
 
-/* Dragging visual feedback */
-.editor-section.dragging,
-.editor-block.dragging {
-    opacity: 0.5;
-    border-color: #0070f3;
-    background: #e6f0ff;
-}
-
-.editor-section.placeholder,
-.editor-block.placeholder {
-    border: 2px dashed #0070f3;
-    background: #f0f8ff;
-    height: 50px; /* optional for blocks */
+/* Design mode: disable pointer events for interactive elements */
+.design-mode a,
+.design-mode button,
+.design-mode input,
+.design-mode textarea,
+.design-mode select {
+    pointer-events: none;
 }

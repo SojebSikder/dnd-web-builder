@@ -8,19 +8,19 @@
     </head>
     <body>
         <div id="app">
-            <div id="toolbar">
-                <select id="section-chooser">
-                    <option value="">Add Section...</option>
-                </select>
+            <div class="layout">
+                <aside id="sidebar">
+                    <h3>Sections</h3>
+                    <div id="section-list" class="plugin-list"></div>
 
-                <select id="block-chooser">
-                    <option value="">Add Block...</option>
-                </select>
-            </div>
+                    <h3>Blocks</h3>
+                    <div id="block-list" class="plugin-list"></div>
+                </aside>
 
-            <div class="main-content">
-                <div id="editor"></div>
-                <div id="settings-panel"></div>
+                <div class="main-content">
+                    <div id="editor"></div>
+                    <div id="settings-panel"></div>
+                </div>
             </div>
         </div>
 
