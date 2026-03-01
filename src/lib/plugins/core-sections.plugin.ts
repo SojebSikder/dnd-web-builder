@@ -1,6 +1,6 @@
 import type { Section } from "../editor/types";
 import { Editor, type EditorPlugin } from "../editor";
-import { applyBaseStyles, BaseStyleSchema } from "../editor/plugin/plugin";
+import { PluginHelper } from "../editor/plugin/plugin-helper";
 
 const CoreSectionsPlugin: EditorPlugin = {
   name: "Core Sections",
@@ -8,14 +8,14 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "container",
       settingsSchema: [
-        ...BaseStyleSchema, // inherit all base styles
+        ...PluginHelper.BaseStyleSchema, // inherit all base styles
         { key: "customTitle", label: "Custom Title", type: "text" }, // add plugin-specific fields
       ],
       renderer: (section: Section, editor: Editor) => {
         const el = document.createElement("section");
         el.className = "container";
 
-        applyBaseStyles(el, section.settings);
+        PluginHelper.applyBaseStyles(el, section.settings);
 
         // plugin-specific content
         if (section.settings.customTitle) {
@@ -31,6 +31,7 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "rich-text",
       settingsSchema: [
+        ...PluginHelper.BaseStyleSchema,
         {
           key: "heading",
           label: "Heading",
@@ -40,6 +41,8 @@ const CoreSectionsPlugin: EditorPlugin = {
       renderer: (section: Section, editor: Editor): HTMLElement => {
         const el = document.createElement("section");
         el.className = "rich-text";
+
+        PluginHelper.applyBaseStyles(el, section.settings);
 
         if (section.settings.heading) {
           const h2 = document.createElement("h2");
@@ -54,6 +57,7 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "featured-collection",
       settingsSchema: [
+        ...PluginHelper.BaseStyleSchema,
         {
           key: "title",
           label: "Title",
@@ -68,6 +72,8 @@ const CoreSectionsPlugin: EditorPlugin = {
       renderer: (section: Section): HTMLElement => {
         const el = document.createElement("section");
         el.className = "featured-collection";
+
+        PluginHelper.applyBaseStyles(el, section.settings);
 
         const h2 = document.createElement("h2");
         h2.textContent = section.settings.title || "Featured Collection";
@@ -85,6 +91,7 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "contact-form",
       settingsSchema: [
+        ...PluginHelper.BaseStyleSchema,
         {
           key: "heading",
           label: "Text",
@@ -129,6 +136,7 @@ const CoreSectionsPlugin: EditorPlugin = {
       renderer: (section: Section): HTMLElement => {
         const el = document.createElement("section");
         el.className = "contact-form";
+        PluginHelper.applyBaseStyles(el, section.settings);
 
         // Heading
         const h2 = document.createElement("h2");

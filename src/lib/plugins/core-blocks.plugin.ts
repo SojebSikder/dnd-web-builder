@@ -1,35 +1,37 @@
-import type { EditorPlugin } from "../editor";
+import { PluginHelper, type EditorPlugin } from "../editor";
 import type { Block } from "../editor/types";
 
 const CoreBlocksPlugin: EditorPlugin = {
   name: "Core Blocks",
   blocks: [
     {
-      type: "text",
-      renderer: (block: Block): HTMLElement => {
-        const p = document.createElement("p");
-        p.textContent = block.settings.text || "Text block";
-        return p;
-      },
       defaultSettings: {
         text: "Your text here",
       },
       settingsSchema: [
+        ...PluginHelper.BaseStyleSchema,
         {
           key: "text",
           label: "Text",
           type: "text",
         },
       ],
+      type: "text",
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("p");
+        PluginHelper.applyBaseStyles(el, block.settings);
+        el.textContent = block.settings.text || "Text block";
+        return el;
+      },
     },
     {
       type: "image",
       renderer: (block: Block): HTMLElement => {
-        const img = document.createElement("img");
-        img.src = block.settings.src;
-        img.alt = block.settings.alt || "";
-        img.style.maxWidth = "40%";
-        return img;
+        const el = document.createElement("img");
+        el.src = block.settings.src;
+        el.alt = block.settings.alt || "";
+        el.style.maxWidth = "40%";
+        return el;
       },
       defaultSettings: {
         src: "",
