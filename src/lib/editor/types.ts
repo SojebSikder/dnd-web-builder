@@ -11,6 +11,7 @@ export type Section = {
   type: string;
   settings: Record<string, any>;
   blocks?: Block[];
+  sections?: Section[];
 };
 
 export type PageJSON = {

@@ -6,22 +6,11 @@ import CoreSectionsPlugin from "./lib/plugins/core-sections.plugin";
 import QuoteBlockPlugin from "./lib/plugins/quote-block.plugin";
 import { registerPlugin } from "./lib/editor/plugin/registry";
 
-const toolbar = document.getElementById("toolbar");
-const editorContainer = document.getElementById("editor");
-const SettingsContainer = document.getElementById("settings-panel");
-
-const editor = new Editor(toolbar, editorContainer, SettingsContainer);
+const editor = new Editor(document.getElementById("app"));
 // core plugins
 registerPlugin(CoreSectionsPlugin);
 registerPlugin(CoreBlocksPlugin);
 registerPlugin(QuoteBlockPlugin);
 // load page data
 editor.load(pageData);
-
-// Wire the delete button
-const deleteBtn = document.getElementById("delete-btn")!;
-deleteBtn.addEventListener("click", () => {
-  editor.deleteSelected();
-});
-
 editor.initChooser();

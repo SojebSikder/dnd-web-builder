@@ -11,7 +11,7 @@ import type { BlockPlugin, SectionPlugin } from "./plugin";
 
 export class Editor {
   // toolbar element
-  private toolbar: HTMLElement;
+  private app: HTMLElement;
   private editor: HTMLElement;
   private settingsContainer: HTMLElement;
 
@@ -24,14 +24,9 @@ export class Editor {
   private designMode = true; // toggle this
   private pageData: PageJSON;
 
-  constructor(
-    toolbar: HTMLElement,
-    editor: HTMLElement,
-    settingsContainer: HTMLElement,
-  ) {
-    this.toolbar = toolbar;
-    this.editor = editor;
-    this.settingsContainer = settingsContainer;
+  constructor(app: HTMLElement) {
+    this.app = app;
+    this.buildUI();
 
     // handle design mode events
     this.editor.addEventListener("click", (e) => {
@@ -57,6 +52,71 @@ export class Editor {
 
       e.preventDefault();
       e.stopPropagation();
+    });
+  }
+
+  buildUI() {
+    //
+    // build ui
+    //
+    const layoutEl = document.createElement("div");
+    layoutEl.classList.add("layout");
+
+    // create aside
+    const asideEl = document.createElement("aside");
+    asideEl.id = "sidebar";
+
+    // create sections
+    const sectionh3El = document.createElement("h3");
+    sectionh3El.textContent = "Sections";
+    const sectionlistEl = document.createElement("div");
+    sectionlistEl.id = "section-list";
+    sectionlistEl.classList.add("section-list");
+
+    // create blocks
+    const blockh3El = document.createElement("h3");
+    blockh3El.textContent = "Blocks";
+    const blocklistEl = document.createElement("div");
+    blocklistEl.id = "block-list";
+    blocklistEl.classList.add("section-list");
+
+    const toolbarEl = document.createElement("div");
+    toolbarEl.id = "toolbar";
+
+    // create button
+    const deleteEl = document.createElement("button");
+    deleteEl.id = "delete-btn";
+    deleteEl.textContent = "Delete Selected";
+
+    const mainContentEl = document.createElement("div");
+    mainContentEl.classList.add("main-content");
+
+    // create editor element
+    const editorEl = document.createElement("div");
+    editorEl.id = "editor";
+
+    // create settings panel element
+    const settingsContainerEl = document.createElement("div");
+    settingsContainerEl.id = "settings-panel";
+
+    mainContentEl.appendChild(editorEl);
+    mainContentEl.appendChild(settingsContainerEl);
+
+    toolbarEl.appendChild(deleteEl);
+    asideEl.appendChild(toolbarEl);
+    asideEl.appendChild(sectionh3El);
+    asideEl.appendChild(sectionlistEl);
+    asideEl.appendChild(blockh3El);
+    asideEl.appendChild(blocklistEl);
+    layoutEl.appendChild(asideEl);
+    layoutEl.appendChild(mainContentEl);
+    this.app.appendChild(layoutEl);
+
+    this.editor = editorEl;
+    this.settingsContainer = settingsContainerEl;
+
+    deleteEl.addEventListener("click", () => {
+      this.deleteSelected();
     });
   }
 
