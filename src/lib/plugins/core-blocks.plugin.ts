@@ -9,12 +9,12 @@ const CoreBlocksPlugin: EditorPlugin = {
         text: "Your text here",
       },
       settingsSchema: [
-        ...PluginHelper.BaseStyleSchema,
         {
           key: "text",
           label: "Text",
           type: "text",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       type: "text",
       renderer: (block: Block): HTMLElement => {
@@ -46,9 +46,11 @@ const CoreBlocksPlugin: EditorPlugin = {
           label: "Text",
           type: "text",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       renderer: (block: Block): HTMLElement => {
         const el = document.createElement("a");
+        PluginHelper.applyBaseStyles(el, block.settings);
         el.textContent = block.settings.label || "Button";
         el.href = block.settings.href || "#";
         el.className = "link";
@@ -67,12 +69,14 @@ const CoreBlocksPlugin: EditorPlugin = {
           label: "Text",
           type: "text",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       defaultSettings: {
         label: "Click me",
       },
       renderer: (block: Block): HTMLElement => {
         const el = document.createElement("button");
+        PluginHelper.applyBaseStyles(el, block.settings);
         el.textContent = block.settings.label || "Button";
         el.className = "btn";
         return el;

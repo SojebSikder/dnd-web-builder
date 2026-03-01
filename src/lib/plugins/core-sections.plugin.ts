@@ -8,8 +8,8 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "container",
       settingsSchema: [
-        ...PluginHelper.BaseStyleSchema, // inherit all base styles
         { key: "customTitle", label: "Custom Title", type: "text" }, // add plugin-specific fields
+        ...PluginHelper.BaseStyleSchema, // inherit all base styles
       ],
       renderer: (section: Section, editor: Editor) => {
         const el = document.createElement("section");
@@ -31,12 +31,12 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "rich-text",
       settingsSchema: [
-        ...PluginHelper.BaseStyleSchema,
         {
           key: "heading",
           label: "Heading",
           type: "text",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       renderer: (section: Section, editor: Editor): HTMLElement => {
         const el = document.createElement("section");
@@ -57,7 +57,6 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "featured-collection",
       settingsSchema: [
-        ...PluginHelper.BaseStyleSchema,
         {
           key: "title",
           label: "Title",
@@ -68,6 +67,7 @@ const CoreSectionsPlugin: EditorPlugin = {
           label: "Description",
           type: "text",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       renderer: (section: Section): HTMLElement => {
         const el = document.createElement("section");
@@ -91,7 +91,6 @@ const CoreSectionsPlugin: EditorPlugin = {
     {
       type: "contact-form",
       settingsSchema: [
-        ...PluginHelper.BaseStyleSchema,
         {
           key: "heading",
           label: "Text",
@@ -132,6 +131,7 @@ const CoreSectionsPlugin: EditorPlugin = {
           label: "Button Border Color",
           type: "color",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       renderer: (section: Section): HTMLElement => {
         const el = document.createElement("section");

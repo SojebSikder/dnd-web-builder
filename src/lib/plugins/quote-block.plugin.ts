@@ -1,4 +1,4 @@
-import type { EditorPlugin } from "../editor";
+import { PluginHelper, type EditorPlugin } from "../editor";
 import type { Block } from "../editor/types";
 
 const QuoteBlockPlugin: EditorPlugin = {
@@ -13,9 +13,11 @@ const QuoteBlockPlugin: EditorPlugin = {
           label: "Text",
           type: "text",
         },
+        ...PluginHelper.BaseStyleSchema,
       ],
       renderer: (block: Block) => {
         const el = document.createElement("blockquote");
+        PluginHelper.applyBaseStyles(el, block.settings);
         el.textContent = block.settings.text || "Quote...";
         el.style.borderLeft = "4px solid #000";
         el.style.paddingLeft = "12px";
