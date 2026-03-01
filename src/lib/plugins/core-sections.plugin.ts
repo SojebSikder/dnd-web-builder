@@ -22,16 +22,49 @@ const CoreSectionsPlugin: EditorPlugin = {
           label: "Width",
           type: "text",
         },
+        // padding
         {
-          key: "padding",
-          label: "Padding",
+          key: "paddingTop",
+          label: "Padding Top",
           type: "text",
         },
         {
-          key: "margin",
-          label: "Margin",
+          key: "paddingRight",
+          label: "Padding Right",
           type: "text",
         },
+        {
+          key: "paddingBottom",
+          label: "Padding Bottom",
+          type: "text",
+        },
+        {
+          key: "paddingLeft",
+          label: "Padding Left",
+          type: "text",
+        },
+        // margin
+        {
+          key: "marginTop",
+          label: "Margin Top",
+          type: "text",
+        },
+        {
+          key: "marginRight",
+          label: "Margin Right",
+          type: "text",
+        },
+        {
+          key: "marginBottom",
+          label: "Margin Bottom",
+          type: "text",
+        },
+        {
+          key: "marginLeft",
+          label: "Margin Left",
+          type: "text",
+        },
+        // border
         {
           key: "borderRadius",
           label: "Border Radius",
@@ -50,13 +83,15 @@ const CoreSectionsPlugin: EditorPlugin = {
         {
           key: "display",
           label: "Display",
-          type: "text",
+          type: "select",
+          options: ["block", "flex", "inline", "inline-block", "none"],
         },
         // position
         {
           key: "position",
           label: "Position",
-          type: "text",
+          type: "select",
+          options: ["static", "relative", "absolute", "fixed", "sticky"],
         },
         {
           key: "top",
@@ -78,6 +113,75 @@ const CoreSectionsPlugin: EditorPlugin = {
           label: "Bottom",
           type: "text",
         },
+        // float
+        {
+          key: "float",
+          label: "Float",
+          type: "select",
+          options: ["none", "left", "right"],
+        },
+        // font
+        {
+          key: "font",
+          label: "Font",
+          type: "select",
+          options: ["none", "Arial", "Helvetica", "Times New Roman"],
+        },
+        // font size
+        {
+          key: "fontSize",
+          label: "Font Size",
+          type: "select",
+          options: ["none", "12px", "14px", "16px", "18px", "20px"],
+        },
+        // font weight
+        {
+          key: "fontWeight",
+          label: "Font Weight",
+          type: "select",
+          options: ["none", "normal", "bold", "bolder", "lighter"],
+        },
+        // font style
+        {
+          key: "fontStyle",
+          label: "Font Style",
+          type: "select",
+          options: ["none", "normal", "italic", "oblique"],
+        },
+        // line height
+        {
+          key: "lineHeight",
+          label: "Line Height",
+          type: "select",
+          options: ["none", "1", "1.5", "2", "2.5"],
+        },
+        // text align
+        {
+          key: "textAlign",
+          label: "Text Align",
+          type: "select",
+          options: ["none", "left", "center", "right"],
+        },
+        // text decoration
+        {
+          key: "textDecoration",
+          label: "Text Decoration",
+          type: "select",
+          options: ["none", "underline", "overline", "line-through"],
+        },
+        // text transform
+        {
+          key: "textTransform",
+          label: "Text Transform",
+          type: "select",
+          options: ["none", "uppercase", "lowercase", "capitalize"],
+        },
+        // letter spacing
+        {
+          key: "letterSpacing",
+          label: "Letter Spacing",
+          type: "text",
+        },
       ],
       renderer: (section: Section, editor: Editor): HTMLElement => {
         const el = document.createElement("section");
@@ -92,12 +196,33 @@ const CoreSectionsPlugin: EditorPlugin = {
         if (section.settings.width) {
           el.style.width = `${section.settings.width}`;
         }
-        if (section.settings.padding) {
-          el.style.padding = `${section.settings.padding}`;
+        // padding
+        if (section.settings.paddingTop) {
+          el.style.paddingTop = `${section.settings.paddingTop}`;
         }
-        if (section.settings.margin) {
-          el.style.margin = `${section.settings.margin}`;
+        if (section.settings.paddingRight) {
+          el.style.paddingRight = `${section.settings.paddingRight}`;
         }
+        if (section.settings.paddingBottom) {
+          el.style.paddingBottom = `${section.settings.paddingBottom}`;
+        }
+        if (section.settings.paddingLeft) {
+          el.style.paddingLeft = `${section.settings.paddingLeft}`;
+        }
+        // margin
+        if (section.settings.marginTop) {
+          el.style.marginTop = `${section.settings.marginTop}`;
+        }
+        if (section.settings.marginRight) {
+          el.style.marginRight = `${section.settings.marginRight}`;
+        }
+        if (section.settings.marginBottom) {
+          el.style.marginBottom = `${section.settings.marginBottom}`;
+        }
+        if (section.settings.marginLeft) {
+          el.style.marginLeft = `${section.settings.marginLeft}`;
+        }
+        // border
         if (section.settings.borderRadius) {
           el.style.borderRadius = `${section.settings.borderRadius}`;
         }
@@ -118,7 +243,46 @@ const CoreSectionsPlugin: EditorPlugin = {
         if (section.settings.top) {
           el.style.top = section.settings.top;
         }
-
+        if (section.settings.right) {
+          el.style.right = section.settings.right;
+        }
+        if (section.settings.left) {
+          el.style.left = section.settings.left;
+        }
+        if (section.settings.bottom) {
+          el.style.bottom = section.settings.bottom;
+        }
+        // font
+        if (section.settings.font) {
+          el.style.fontFamily = section.settings.font;
+        }
+        if (section.settings.fontSize) {
+          el.style.fontSize = section.settings.fontSize;
+        }
+        // font weight
+        if (section.settings.fontWeight) {
+          el.style.fontWeight = section.settings.fontWeight;
+        }
+        // text decoration
+        if (section.settings.textDecoration) {
+          el.style.textDecoration = section.settings.textDecoration;
+        }
+        // text transform
+        if (section.settings.textTransform) {
+          el.style.textTransform = section.settings.textTransform;
+        }
+        // letter spacing
+        if (section.settings.letterSpacing) {
+          el.style.letterSpacing = section.settings.letterSpacing;
+        }
+        // line height
+        if (section.settings.lineHeight) {
+          el.style.lineHeight = section.settings.lineHeight;
+        }
+        // text alignment
+        if (section.settings.textAlign) {
+          el.style.textAlign = section.settings.textAlign;
+        }
         el.appendChild(editor.renderBlocks({ blocks: section.blocks }));
         return el;
       },
