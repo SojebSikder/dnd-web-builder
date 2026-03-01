@@ -328,18 +328,9 @@ export class Editor {
   refreshSelected() {
     if (!this.selected) return;
 
-    if (this.selected.type === "section") {
-      const el = this.editor.querySelector(
-        `[data-section-id="${this.selected.id}"]`,
-      ) as HTMLElement | null;
-      if (!el) return;
-
-      const sectionType = el.dataset.sectionType!;
-      const plugin = getSectionPlugin(sectionType);
+    const refreshSection = (sectionData: Section, sectionEl: HTMLElement) => {
+      const plugin = getSectionPlugin(sectionData.type);
       if (!plugin) return;
-
-      const sectionData = this.findSectionById(this.selected.id);
-      if (!sectionData) return;
 
       // Render new section element
       const newEl = plugin.renderer(sectionData, this);
@@ -350,47 +341,93 @@ export class Editor {
       // Re-attach drag events
       this.setupSectionDrag(newEl);
 
-      // Re-attach click to select
+      // Re-attach click to select section
       newEl.addEventListener("click", () => {
         this.selected = { type: "section", id: sectionData.id };
         this.showSettings(plugin, sectionData.settings);
       });
 
-      // Replace old element with new
-      el.replaceWith(newEl);
-    }
+      // Refresh all blocks inside this section
+      const blockWrapper = newEl.querySelector(".editor-blocks");
+      if (sectionData.blocks && blockWrapper) {
+        blockWrapper.innerHTML = ""; // clear old blocks
+        sectionData.blocks.forEach((block) => {
+          const blockPlugin = getBlockPlugin(block.type);
+          if (!blockPlugin) return;
 
-    if (this.selected.type === "block") {
+          const blockEl = blockPlugin.renderer(block);
+          blockEl.classList.add("editor-block");
+          blockEl.dataset.blockId = block.id;
+          blockEl.dataset.blockType = block.type;
+
+          // Re-attach drag for block
+          this.setupSectionDrag(blockEl);
+
+          // Click to select block
+          blockEl.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this.selected = { type: "block", id: block.id };
+            this.showSettings(blockPlugin, block.settings);
+          });
+
+          blockWrapper.appendChild(blockEl);
+        });
+      }
+
+      sectionEl.replaceWith(newEl);
+    };
+
+    if (this.selected.type === "section") {
       const el = this.editor.querySelector(
-        `[data-block-id="${this.selected.id}"]`,
+        `[data-section-id="${this.selected.id}"]`,
       ) as HTMLElement | null;
       if (!el) return;
 
-      const blockType = el.dataset.blockType!;
-      const plugin = getBlockPlugin(blockType);
-      if (!plugin) return;
+      const sectionData = this.findSectionById(this.selected.id);
+      if (!sectionData) return;
 
-      const blockData = this.findBlockById(this.selected.id);
-      if (!blockData) return;
+      refreshSection(sectionData, el);
+    }
 
-      // Render new block element
-      const newEl = plugin.renderer(blockData);
-      newEl.classList.add("editor-block");
-      newEl.dataset.blockId = blockData.id;
-      newEl.dataset.blockType = blockData.type;
+    if (this.selected.type === "block") {
+      // Find the section containing this block
+      for (const section of Object.values(this.pageData.sections)) {
+        const block = section.blocks?.find((b) => b.id === this.selected!.id);
+        if (!block) continue;
 
-      // Re-attach drag events
-      this.setupSectionDrag(newEl);
+        const sectionEl = this.editor.querySelector(
+          `[data-section-id="${section.id}"]`,
+        ) as HTMLElement;
+        if (!sectionEl) return;
 
-      // Re-attach click to select
-      newEl.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.selected = { type: "block", id: blockData.id };
-        this.showSettings(plugin, blockData.settings);
-      });
+        const blockWrapper = sectionEl.querySelector(".editor-blocks");
+        if (!blockWrapper) return;
 
-      // Replace old element with new
-      el.replaceWith(newEl);
+        const oldEl = blockWrapper.querySelector(
+          `[data-block-id="${block.id}"]`,
+        ) as HTMLElement;
+        if (!oldEl) return;
+
+        const blockPlugin = getBlockPlugin(block.type);
+        if (!blockPlugin) return;
+
+        // Render new block element
+        const newEl = blockPlugin.renderer(block);
+        newEl.classList.add("editor-block");
+        newEl.dataset.blockId = block.id;
+        newEl.dataset.blockType = block.type;
+
+        // Re-attach drag & click
+        this.setupSectionDrag(newEl);
+        newEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.selected = { type: "block", id: block.id };
+          this.showSettings(blockPlugin, block.settings);
+        });
+
+        oldEl.replaceWith(newEl);
+        break; // block found and refreshed, stop looping
+      }
     }
   }
 
