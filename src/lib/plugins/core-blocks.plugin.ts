@@ -22,6 +22,186 @@ const CoreBlocksPlugin: EditorPlugin = {
       },
     },
     {
+      defaultSettings: {
+        src: "https://www.w3schools.com/html/mov_bbb.mp4",
+        controls: true,
+      },
+      settingsSchema: [
+        {
+          key: "src",
+          label: "Source",
+          type: "text",
+        },
+        ...PluginHelper.BaseStyleSchema,
+      ],
+      type: "iframe",
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("iframe");
+        PluginHelper.applyBaseStyles(el, block.settings);
+        el.src =
+          block.settings.src || "https://www.w3schools.com/html/mov_bbb.mp4";
+        return el;
+      },
+    },
+    {
+      defaultSettings: {
+        src: "https://www.w3schools.com/html/mov_bbb.mp4",
+        controls: true,
+      },
+      settingsSchema: [
+        {
+          key: "src",
+          label: "Source",
+          type: "text",
+        },
+        {
+          key: "controls",
+          label: "Controls",
+          type: "boolean",
+        },
+        {
+          key: "autoplay",
+          label: "Autoplay",
+          type: "boolean",
+        },
+        {
+          key: "muted",
+          label: "Muted",
+          type: "boolean",
+        },
+        {
+          key: "loop",
+          label: "Loop",
+          type: "boolean",
+        },
+        ...PluginHelper.BaseStyleSchema,
+      ],
+      type: "video",
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("video");
+        PluginHelper.applyBaseStyles(el, block.settings);
+        el.src =
+          block.settings.src || "https://www.w3schools.com/html/mov_bbb.mp4";
+        el.controls = block.settings.controls || true;
+        el.autoplay = block.settings.autoplay || false;
+        el.muted = block.settings.muted || false;
+        el.loop = block.settings.loop || false;
+        return el;
+      },
+    },
+    {
+      defaultSettings: {
+        src: "https://www.w3schools.com/html/mov_bbb.mp4",
+        controls: true,
+      },
+      settingsSchema: [
+        {
+          key: "src",
+          label: "Source",
+          type: "text",
+        },
+        {
+          key: "controls",
+          label: "Controls",
+          type: "boolean",
+        },
+        {
+          key: "autoplay",
+          label: "Autoplay",
+          type: "boolean",
+        },
+        {
+          key: "muted",
+          label: "Muted",
+          type: "boolean",
+        },
+        {
+          key: "loop",
+          label: "Loop",
+          type: "boolean",
+        },
+        ...PluginHelper.BaseStyleSchema,
+      ],
+      type: "audio",
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("audio");
+        PluginHelper.applyBaseStyles(el, block.settings);
+        el.src =
+          block.settings.src || "https://www.w3schools.com/html/mov_bbb.mp4";
+        el.controls = block.settings.controls || true;
+        el.autoplay = block.settings.autoplay || false;
+        el.muted = block.settings.muted || false;
+        el.loop = block.settings.loop || false;
+        return el;
+      },
+    },
+    {
+      settingsSchema: [
+        {
+          key: "placeholder",
+          label: "Placeholder",
+          type: "text",
+        },
+        {
+          key: "value",
+          label: "Value",
+          type: "text",
+        },
+        {
+          key: "disabled",
+          label: "Disabled",
+          type: "boolean",
+        },
+        {
+          key: "required",
+          label: "Required",
+          type: "boolean",
+        },
+        {
+          key: "autofocus",
+          label: "Autofocus",
+          type: "boolean",
+        },
+
+        {
+          key: "minlength",
+          label: "Min Length",
+          type: "number",
+        },
+        {
+          key: "maxlength",
+          label: "Max Length",
+          type: "number",
+        },
+        {
+          key: "cols",
+          label: "Columns",
+          type: "number",
+        },
+        {
+          key: "rows",
+          label: "Rows",
+          type: "number",
+        },
+        ...PluginHelper.BaseStyleSchema,
+      ],
+      type: "textarea",
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("textarea");
+        PluginHelper.applyBaseStyles(el, block.settings);
+        el.placeholder = block.settings.placeholder || "Write something...";
+        el.value = block.settings.value || "";
+        el.disabled = block.settings.disabled || false;
+        el.required = block.settings.required || false;
+        el.autofocus = block.settings.autofocus || false;
+        el.minLength = block.settings.minlength || 0;
+        el.maxLength = block.settings.maxlength || Infinity;
+        el.cols = block.settings.cols || 30;
+        el.rows = block.settings.rows || 10;
+        return el;
+      },
+    },
+    {
       settingsSchema: [
         {
           key: "placeholder",

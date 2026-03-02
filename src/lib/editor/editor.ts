@@ -454,7 +454,9 @@ export class Editor {
         case "boolean":
           input = document.createElement("input");
           input.type = "checkbox";
-          input.checked = Boolean(settings[field.key]);
+          input.checked = Boolean(
+            settings[field.key] ?? defaultSettings?.[field.key] ?? false,
+          );
           break;
 
         case "select":
