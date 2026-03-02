@@ -4,30 +4,13 @@ import type { Block } from "../editor/types";
 const CoreBlocksPlugin: EditorPlugin = {
   name: "Core Blocks",
   blocks: [
-    // {
-    //   settingsSchema: [
-    //     {
-    //       key: "text",
-    //       label: "Text",
-    //       type: "text",
-    //     },
-    //     ...PluginHelper.BaseStyleSchema,
-    //   ],
-    //   type: "text",
-    //   renderer: (block: Block): HTMLElement => {
-    //     const el = document.createElement("p");
-    //     PluginHelper.applyBaseStyles(el, block.settings);
-    //     el.textContent = block.settings.text || "Text block";
-    //     return el;
-    //   },
-    // },
     {
       settingsSchema: [
         {
           key: "type",
           label: "Type",
           type: "select",
-          options: ["label", "p", "h1", "h2", "h3", "h4", "h5", "h6"],
+          options: ["label", "p", "span", "h1", "h2", "h3", "h4", "h5", "h6"],
         },
         ...PluginHelper.BaseStyleSchema,
       ],
