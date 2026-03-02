@@ -235,8 +235,8 @@ body {
 }
 
 /* Modal box */
-.modal-box {
-    width: 80%;
+/*.modal-box {
+    width: 50%;
     height: 90%;
     background: #fff;
     border-radius: 8px;
@@ -244,7 +244,7 @@ body {
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
+}*/
 
 /* Header */
 .modal-header {

@@ -8,12 +8,14 @@ import {
   sectionRenderers,
 } from "./plugin/registry";
 import type { BlockPlugin, SectionPlugin } from "./plugin";
+import { UI } from "./ui/ui";
 
 export class Editor {
   // toolbar element
   private app: HTMLElement;
   private editor: HTMLElement;
   private settingsContainer: HTMLElement;
+  private _ui: UI;
 
   // track diff of section/block
   private selected:
@@ -53,6 +55,14 @@ export class Editor {
       e.preventDefault();
       e.stopPropagation();
     });
+  }
+
+  // Predefined UI interface
+  ui(): UI {
+    if (!this._ui) {
+      this._ui = new UI();
+    }
+    return this._ui;
   }
 
   buildUI() {
@@ -149,89 +159,25 @@ export class Editor {
   showJSONModal() {
     const json = this.getJSON();
 
-    // Create modal overlay
-    const modalContainer = document.createElement("div");
-    modalContainer.classList.add("modal-container");
-    modalContainer.style.position = "fixed";
-    modalContainer.style.top = "0";
-    modalContainer.style.left = "0";
-    modalContainer.style.width = "100%";
-    modalContainer.style.height = "100%";
-    modalContainer.style.backgroundColor = "rgba(0,0,0,0.5)";
-    modalContainer.style.display = "flex";
-    modalContainer.style.justifyContent = "center";
-    modalContainer.style.alignItems = "center";
-    modalContainer.style.zIndex = "9999";
-
-    // Create modal box
-    const modalBox = document.createElement("div");
-    modalBox.className = "modal-box";
-    modalBox.style.width = "80%";
-    modalBox.style.height = "90%";
-    modalBox.style.backgroundColor = "#fff";
-    modalBox.style.borderRadius = "8px";
-    modalBox.style.display = "flex";
-    modalBox.style.flexDirection = "column";
-    modalBox.style.overflow = "hidden";
-
-    modalContainer.appendChild(modalBox);
-    document.body.appendChild(modalContainer);
-
-    // Header
-    const header = document.createElement("div");
-    header.className = "modal-header";
-    header.style.display = "flex";
-    header.style.justifyContent = "space-between";
-    header.style.alignItems = "center";
-    header.style.padding = "10px 16px";
-    header.style.backgroundColor = "#f8f8f8";
-    header.style.borderBottom = "1px solid #ddd";
-
-    modalBox.appendChild(header);
-
-    // Title (optional)
-    const title = document.createElement("span");
-    title.textContent = "JSON Viewer";
-    header.appendChild(title);
-
-    // Button wrapper
-    const buttonWrapper = document.createElement("div");
-    buttonWrapper.style.display = "flex";
-    buttonWrapper.style.gap = "10px";
-    header.appendChild(buttonWrapper);
-
-    // Copy button
-    const copyButton = document.createElement("button");
-    copyButton.className = "modal-actions";
-    copyButton.textContent = "Copy";
-    copyButton.addEventListener("click", () => {
-      navigator.clipboard.writeText(json);
-    });
-    buttonWrapper.appendChild(copyButton);
-
-    // Close button
-    const closeButton = document.createElement("button");
-    closeButton.textContent = "Close";
-    closeButton.className = "modal-actions";
-    closeButton.addEventListener("click", () => {
-      document.body.removeChild(modalContainer);
-    });
-    buttonWrapper.appendChild(closeButton);
-
-    // Body
-    const modalBody = document.createElement("div");
-    modalBody.style.flex = "1";
-    modalBody.style.padding = "16px";
-    modalBody.style.overflowY = "auto";
-
     const pre = document.createElement("pre");
-    // pre.textContent = json;
     pre.innerHTML = this.syntaxHighlight(json);
 
-    modalBody.appendChild(pre);
-    modalBox.appendChild(modalBody);
+    this.ui().createModal({
+      title: "JSON Viewer",
+      content: pre,
+      width: "50%",
+      actions: [
+        {
+          label: "Copy",
+          onClick: async () => {
+            await navigator.clipboard.writeText(json);
+          },
+        },
+      ],
+    });
   }
 
+  // syntax highligh for json source view
   syntaxHighlight(json: string) {
     json = JSON.stringify(JSON.parse(json), null, 2);
 
