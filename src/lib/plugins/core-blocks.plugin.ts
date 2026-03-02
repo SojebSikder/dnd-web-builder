@@ -42,7 +42,9 @@ const CoreBlocksPlugin: EditorPlugin = {
         table.appendChild(tbody);
 
         // Store table data for persistence
-        let tableData: string[][] = [[""]]; // start with 1x1 table
+        let tableData: string[][] = block.settings.tableData
+          ? JSON.parse(JSON.stringify(block.settings.tableData))
+          : [[""]];
 
         let columnCount = 1;
 
