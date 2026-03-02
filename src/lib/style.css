@@ -45,7 +45,7 @@ body {
 
 /* Sidebar */
 #sidebar {
-    width: 250px;
+    width: 300px;
     border-right: 1px solid #ddd;
     padding: 10px;
     background: #f9f9f9;
@@ -61,6 +61,7 @@ body {
 
 .plugin-item {
     padding: 8px 10px;
+    margin-top: 8px;
     background: white;
     border: 1px solid #ccc;
     cursor: grab;
@@ -219,4 +220,97 @@ body {
 #toolbar button {
     padding: 4px 12px;
     cursor: pointer;
+}
+
+/*json source code modal*/
+/* Overlay */
+.modal-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Modal box */
+.modal-box {
+    width: 80%;
+    height: 90%;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+}
+
+/* Button group */
+.modal-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Buttons */
+.modal-header button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s ease;
+}
+
+.modal-header button:hover {
+    background: #f0f0f0;
+}
+
+/* Body */
+.modal-body {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* JSON display */
+.modal-body pre {
+    margin: 0;
+    font-family: monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/*json highlight*/
+/* JSON Colors */
+.json-key {
+    color: #1e88e5;
+}
+
+.json-string {
+    color: #43a047;
+}
+
+.json-number {
+    color: #8e24aa;
+}
+
+.json-boolean {
+    color: #fb8c00;
+}
+
+.json-null {
+    color: #e53935;
 }

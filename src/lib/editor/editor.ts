@@ -83,10 +83,20 @@ export class Editor {
     const toolbarEl = document.createElement("div");
     toolbarEl.id = "toolbar";
 
-    // create button
+    // create delete button
     const deleteEl = document.createElement("button");
     deleteEl.id = "delete-btn";
     deleteEl.textContent = "Delete Selected";
+
+    // create designMode button
+    const designModeEl = document.createElement("button");
+    designModeEl.id = "design-mode-btn";
+    designModeEl.textContent = "Design Mode";
+
+    // create designMode button
+    const showJsonBtnEl = document.createElement("button");
+    showJsonBtnEl.id = "show-json-btn";
+    showJsonBtnEl.textContent = "Show JSON";
 
     const mainContentEl = document.createElement("div");
     mainContentEl.classList.add("main-content");
@@ -103,6 +113,8 @@ export class Editor {
     mainContentEl.appendChild(settingsContainerEl);
 
     toolbarEl.appendChild(deleteEl);
+    toolbarEl.appendChild(designModeEl);
+    toolbarEl.appendChild(showJsonBtnEl);
     asideEl.appendChild(toolbarEl);
     asideEl.appendChild(sectionh3El);
     asideEl.appendChild(sectionlistEl);
@@ -115,9 +127,135 @@ export class Editor {
     this.editor = editorEl;
     this.settingsContainer = settingsContainerEl;
 
+    designModeEl.addEventListener("click", () => {
+      this.setDesignMode(!this.designMode);
+      designModeEl.textContent = this.designMode ? "Design Mode" : "Edit Mode";
+    });
+
     deleteEl.addEventListener("click", () => {
       this.deleteSelected();
     });
+
+    showJsonBtnEl.addEventListener("click", () => {
+      this.showJSONModal();
+    });
+  }
+
+  getJSON() {
+    return JSON.stringify(this.pageData, null, 2);
+  }
+
+  // create show modal panel to show json source code
+  showJSONModal() {
+    const json = this.getJSON();
+
+    // Create modal overlay
+    const modalContainer = document.createElement("div");
+    modalContainer.classList.add("modal-container");
+    modalContainer.style.position = "fixed";
+    modalContainer.style.top = "0";
+    modalContainer.style.left = "0";
+    modalContainer.style.width = "100%";
+    modalContainer.style.height = "100%";
+    modalContainer.style.backgroundColor = "rgba(0,0,0,0.5)";
+    modalContainer.style.display = "flex";
+    modalContainer.style.justifyContent = "center";
+    modalContainer.style.alignItems = "center";
+    modalContainer.style.zIndex = "9999";
+
+    // Create modal box
+    const modalBox = document.createElement("div");
+    modalBox.className = "modal-box";
+    modalBox.style.width = "80%";
+    modalBox.style.height = "90%";
+    modalBox.style.backgroundColor = "#fff";
+    modalBox.style.borderRadius = "8px";
+    modalBox.style.display = "flex";
+    modalBox.style.flexDirection = "column";
+    modalBox.style.overflow = "hidden";
+
+    modalContainer.appendChild(modalBox);
+    document.body.appendChild(modalContainer);
+
+    // Header
+    const header = document.createElement("div");
+    header.className = "modal-header";
+    header.style.display = "flex";
+    header.style.justifyContent = "space-between";
+    header.style.alignItems = "center";
+    header.style.padding = "10px 16px";
+    header.style.backgroundColor = "#f8f8f8";
+    header.style.borderBottom = "1px solid #ddd";
+
+    modalBox.appendChild(header);
+
+    // Title (optional)
+    const title = document.createElement("span");
+    title.textContent = "JSON Viewer";
+    header.appendChild(title);
+
+    // Button wrapper
+    const buttonWrapper = document.createElement("div");
+    buttonWrapper.style.display = "flex";
+    buttonWrapper.style.gap = "10px";
+    header.appendChild(buttonWrapper);
+
+    // Copy button
+    const copyButton = document.createElement("button");
+    copyButton.className = "modal-actions";
+    copyButton.textContent = "Copy";
+    copyButton.addEventListener("click", () => {
+      navigator.clipboard.writeText(json);
+    });
+    buttonWrapper.appendChild(copyButton);
+
+    // Close button
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "Close";
+    closeButton.className = "modal-actions";
+    closeButton.addEventListener("click", () => {
+      document.body.removeChild(modalContainer);
+    });
+    buttonWrapper.appendChild(closeButton);
+
+    // Body
+    const modalBody = document.createElement("div");
+    modalBody.style.flex = "1";
+    modalBody.style.padding = "16px";
+    modalBody.style.overflowY = "auto";
+
+    const pre = document.createElement("pre");
+    // pre.textContent = json;
+    pre.innerHTML = this.syntaxHighlight(json);
+
+    modalBody.appendChild(pre);
+    modalBox.appendChild(modalBody);
+  }
+
+  syntaxHighlight(json: string) {
+    json = JSON.stringify(JSON.parse(json), null, 2);
+
+    json = json
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    return json.replace(
+      /("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
+      (match) => {
+        let cls = "json-number";
+
+        if (/^"/.test(match)) {
+          cls = /:$/.test(match) ? "json-key" : "json-string";
+        } else if (/true|false/.test(match)) {
+          cls = "json-boolean";
+        } else if (/null/.test(match)) {
+          cls = "json-null";
+        }
+
+        return `<span class="${cls}">${match}</span>`;
+      },
+    );
   }
 
   setDesignMode(enabled: boolean) {
