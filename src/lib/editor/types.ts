@@ -42,4 +42,5 @@ export type SettingSchema = {
   min?: number; // For number type
   max?: number; // For number type
   step?: number; // For number type
+  hidden?: boolean;
 };

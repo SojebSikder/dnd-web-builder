@@ -436,6 +436,10 @@ export class Editor {
 
       let input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
+      if (field.hidden) {
+        wrapper.style.display = "none";
+      }
+
       switch (field.type) {
         case "text":
         case "number":

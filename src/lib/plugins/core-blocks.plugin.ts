@@ -28,6 +28,7 @@ const CoreBlocksPlugin: EditorPlugin = {
           key: "tableData",
           label: "Table Data",
           type: "textarea",
+          hidden: true,
         },
         ...PluginHelper.BaseStyleSchema,
       ],
