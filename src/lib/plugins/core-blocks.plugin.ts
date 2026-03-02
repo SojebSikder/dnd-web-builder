@@ -12,6 +12,11 @@ const CoreBlocksPlugin: EditorPlugin = {
           type: "select",
           options: ["label", "p", "span", "h1", "h2", "h3", "h4", "h5", "h6"],
         },
+        {
+          key: "text",
+          label: "Text",
+          type: "text",
+        },
         ...PluginHelper.BaseStyleSchema,
       ],
       type: "text",
