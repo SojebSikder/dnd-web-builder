@@ -142,7 +142,9 @@ export class Editor {
 
     designModeEl.addEventListener("click", () => {
       this.setDesignMode(!this.designMode);
-      designModeEl.textContent = this.designMode ? "Design Mode" : "Edit Mode";
+      designModeEl.textContent = this.designMode
+        ? "Design Mode"
+        : "Preview Mode";
     });
 
     deleteEl.addEventListener("click", () => {
@@ -163,7 +165,7 @@ export class Editor {
     const json = this.getJSON();
 
     const pre = document.createElement("pre");
-    pre.innerHTML = this.syntaxHighlight(json);
+    pre.innerHTML = this.syntaxHighlightWithLineNumbers(json);
 
     this.ui().createModal({
       title: "JSON Viewer",
@@ -181,16 +183,19 @@ export class Editor {
     });
   }
 
-  // syntax highligh for json source view
-  syntaxHighlight(json: string) {
+  // syntax highlight for json source view with line numbers
+  syntaxHighlightWithLineNumbers(json: string) {
+    // pretty print
     json = JSON.stringify(JSON.parse(json), null, 2);
 
+    // escape HTML
     json = json
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
 
-    return json.replace(
+    // add syntax highlighting
+    const highlighted = json.replace(
       /("(\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
       (match) => {
         let cls = "json-number";
@@ -206,6 +211,15 @@ export class Editor {
         return `<span class="${cls}">${match}</span>`;
       },
     );
+
+    // split by lines and add line numbers
+    return highlighted
+      .split("\n")
+      .map(
+        (line, idx) =>
+          `<span class="json-line"><span class="line-number">${idx + 1}</span> ${line}</span>`,
+      )
+      .join("\n");
   }
 
   setDesignMode(enabled: boolean) {
