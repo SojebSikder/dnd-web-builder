@@ -105,6 +105,9 @@ const CoreBlocksPlugin: EditorPlugin = {
       },
     },
     {
+      defaultSettings: {
+        src: "https://download.logo.wine/logo/Rust_(video_game)/Rust_(video_game)-Logo.wine.png",
+      },
       settingsSchema: [
         {
           key: "src",
@@ -132,6 +135,10 @@ const CoreBlocksPlugin: EditorPlugin = {
     },
     {
       type: "link",
+      defaultSettings: {
+        label: "Click me",
+        href: "#",
+      },
       settingsSchema: [
         {
           key: "label",
@@ -154,15 +161,11 @@ const CoreBlocksPlugin: EditorPlugin = {
       renderer: (block: Block): HTMLElement => {
         const el = document.createElement("a");
         PluginHelper.applyBaseStyles(el, block.settings);
-        el.textContent = block.settings.label || "Button";
+        el.textContent = block.settings.label ?? "Click me";
         el.href = block.settings.href || "#";
         el.target = block.settings.target || "_self";
         el.className = "link";
         return el;
-      },
-      defaultSettings: {
-        label: "Click me",
-        href: "#",
       },
     },
     {

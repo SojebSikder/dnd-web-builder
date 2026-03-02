@@ -95,16 +95,19 @@ export class Editor {
 
     // create delete button
     const deleteEl = document.createElement("button");
+    deleteEl.classList.add("btn");
     deleteEl.id = "delete-btn";
     deleteEl.textContent = "Delete Selected";
 
     // create designMode button
     const designModeEl = document.createElement("button");
+    designModeEl.classList.add("btn");
     designModeEl.id = "design-mode-btn";
     designModeEl.textContent = "Design Mode";
 
     // create designMode button
     const showJsonBtnEl = document.createElement("button");
+    showJsonBtnEl.classList.add("btn");
     showJsonBtnEl.id = "show-json-btn";
     showJsonBtnEl.textContent = "Show JSON";
 
@@ -169,6 +172,7 @@ export class Editor {
       actions: [
         {
           label: "Copy",
+          className: "btn-secondary",
           onClick: async () => {
             await navigator.clipboard.writeText(json);
           },
@@ -389,13 +393,18 @@ export class Editor {
     settings: Record<string, any>,
   ) {
     this.settingsContainer.innerHTML = "";
-    const panel = this.renderSettingsPanel(settings, plugin.settingsSchema);
+    const panel = this.renderSettingsPanel(
+      settings,
+      plugin.settingsSchema,
+      plugin.defaultSettings,
+    );
     this.settingsContainer.appendChild(panel);
   }
 
   renderSettingsPanel(
     settings: Record<string, any>,
     schema?: SettingSchema[],
+    defaultSettings?: Record<string, any>,
   ): HTMLElement {
     const panel = document.createElement("div");
     panel.className = "editor-settings-panel";
@@ -423,7 +432,8 @@ export class Editor {
             if (field.max !== undefined) input.max = String(field.max);
             if (field.step !== undefined) input.step = String(field.step);
           }
-          input.value = settings[field.key] ?? "";
+          input.value =
+            settings[field.key] ?? defaultSettings?.[field.key] ?? "";
           break;
 
         case "boolean":

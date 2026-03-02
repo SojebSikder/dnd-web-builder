@@ -69,7 +69,7 @@ export class UI {
     // Custom buttons
     actions.forEach((action) => {
       const btn = document.createElement("button");
-      btn.className = "modal-actions";
+      btn.classList.add("btn", "btn-primary", "modal-actions");
       btn.textContent = action.label;
       if (action.className) btn.classList.add(action.className);
 
@@ -80,7 +80,7 @@ export class UI {
 
     // defauly close button
     const closeButton = document.createElement("button");
-    closeButton.className = "modal-actions";
+    closeButton.classList.add("btn", "btn-primary", "modal-actions");
     closeButton.textContent = "Close";
 
     header.appendChild(titleEl);
@@ -116,15 +116,5 @@ export class UI {
     document.addEventListener("keydown", escHandler);
 
     return { close };
-  }
-
-  createJSONModal(data: unknown) {
-    const pre = document.createElement("pre");
-    pre.textContent = JSON.stringify(data, null, 2);
-
-    return this.createModal({
-      title: "JSON Viewer",
-      content: pre,
-    });
   }
 }

@@ -200,6 +200,85 @@ body {
     width: auto;
 }
 
+/*button styles*/
+/* Base button styles */
+.btn {
+    padding: 8px 16px; /* slightly more comfortable padding */
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out; /* smooth transition */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    user-select: none;
+    outline: none;
+}
+
+/* Active / pressed state */
+.btn:active {
+    transform: translateY(1px); /* subtle press effect */
+}
+
+/* Focus state for accessibility */
+.btn:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
+}
+
+/* Disabled state */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Primary button */
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+/* Secondary button */
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Tertiary button */
+.btn-tertiary {
+    background-color: #495057;
+    color: #fff;
+    border-color: #495057;
+}
+
+.btn-tertiary:hover:not(:disabled) {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+/* Optional: add subtle shadow for depth */
+.btn-primary,
+.btn-secondary,
+.btn-tertiary {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/*end button styles*/
+
 /* Design mode: disable pointer events for interactive elements */
 .design-mode a,
 .design-mode button,
