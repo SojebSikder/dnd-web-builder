@@ -23,7 +23,14 @@ const CoreBlocksPlugin: EditorPlugin = {
       },
     },
     {
-      settingsSchema: [...PluginHelper.BaseStyleSchema],
+      settingsSchema: [
+        {
+          key: "tableData",
+          label: "Table Data",
+          type: "textarea",
+        },
+        ...PluginHelper.BaseStyleSchema,
+      ],
       type: "table",
       isDynamic: true,
       renderer: (block: Block): HTMLElement => {
@@ -121,6 +128,9 @@ const CoreBlocksPlugin: EditorPlugin = {
         // Table styling
         table.style.borderCollapse = "collapse";
         table.style.width = "100%";
+
+        // Persist to block settings
+        block.settings.tableData = tableData;
 
         return el;
       },
