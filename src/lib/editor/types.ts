@@ -26,7 +26,13 @@ export type SectionRenderer = (
 ) => HTMLElement;
 
 //
-export type SettingType = "text" | "number" | "boolean" | "select" | "color";
+export type SettingType =
+  | "text"
+  | "textarea"
+  | "number"
+  | "boolean"
+  | "select"
+  | "color";
 
 export type SettingSchema = {
   key: string; // The settings key in the block/section

@@ -434,7 +434,7 @@ export class Editor {
       label.textContent = field.label;
       label.htmlFor = field.key;
 
-      let input: HTMLInputElement | HTMLSelectElement;
+      let input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
       switch (field.type) {
         case "text":
@@ -447,6 +447,12 @@ export class Editor {
             if (field.max !== undefined) input.max = String(field.max);
             if (field.step !== undefined) input.step = String(field.step);
           }
+          input.value =
+            settings[field.key] ?? defaultSettings?.[field.key] ?? "";
+          break;
+
+        case "textarea":
+          input = document.createElement("textarea");
           input.value =
             settings[field.key] ?? defaultSettings?.[field.key] ?? "";
           break;

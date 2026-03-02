@@ -98,6 +98,8 @@ export class PluginHelper {
       type: "select",
       options: ["none", "left", "right"],
     },
+    // custom css
+    { key: "css", label: "CSS", type: "textarea" },
   ];
 
   static applyBaseStyles(el: HTMLElement, settings: Record<string, any>) {
@@ -199,6 +201,10 @@ export class PluginHelper {
     // text alignment
     if (settings.textAlign) {
       el.style.textAlign = settings.textAlign;
+    }
+    // custom css
+    if (settings.css) {
+      el.style.cssText += settings.css;
     }
   }
 }
