@@ -393,3 +393,20 @@ body {
 .json-null {
     color: #e53935;
 }
+
+.json-modal {
+    counter-reset: line;
+    font-family: monospace;
+    white-space: pre;
+}
+
+.json-line {
+    display: block;
+}
+
+.line-number {
+    display: inline-block;
+    width: 2em;
+    user-select: none;
+    opacity: 0.5;
+}

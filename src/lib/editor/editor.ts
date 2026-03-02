@@ -165,6 +165,7 @@ export class Editor {
     const json = this.getJSON();
 
     const pre = document.createElement("pre");
+    pre.classList.add("json-modal");
     pre.innerHTML = this.syntaxHighlightWithLineNumbers(json);
 
     this.ui().createModal({
