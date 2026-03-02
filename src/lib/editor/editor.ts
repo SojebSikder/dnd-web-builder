@@ -591,6 +591,8 @@ export class Editor {
         const blockPlugin = getBlockPlugin(block.type);
         if (!blockPlugin) return;
 
+        if (blockPlugin?.isDynamic) return; // skip re-render
+
         // Render new block element
         const newEl = blockPlugin.renderer(block);
         newEl.classList.add("editor-block");

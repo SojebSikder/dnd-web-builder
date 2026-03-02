@@ -5,6 +5,7 @@ export type BlockPlugin = {
   renderer: BlockRenderer;
   defaultSettings?: Record<string, any>;
   settingsSchema?: SettingSchema[];
+  isDynamic?: true;
 };
 
 export type SectionPlugin = {

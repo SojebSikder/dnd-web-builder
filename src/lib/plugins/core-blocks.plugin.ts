@@ -23,6 +23,109 @@ const CoreBlocksPlugin: EditorPlugin = {
       },
     },
     {
+      settingsSchema: [...PluginHelper.BaseStyleSchema],
+      type: "table",
+      isDynamic: true,
+      renderer: (block: Block): HTMLElement => {
+        const el = document.createElement("div"); // container
+        PluginHelper.applyBaseStyles(el, block.settings);
+
+        const table = document.createElement("table");
+        const tbody = document.createElement("tbody");
+        table.appendChild(tbody);
+
+        // Store table data for persistence
+        let tableData: string[][] = [[""]]; // start with 1x1 table
+
+        let columnCount = 1;
+
+        // Helper to render the table from tableData
+        const renderTable = () => {
+          // Clear tbody
+          tbody.innerHTML = "";
+          tableData.forEach((row) => {
+            const tr = document.createElement("tr");
+            row.forEach((cellText) => {
+              const td = document.createElement("td");
+              td.contentEditable = "true";
+              td.textContent = cellText;
+              td.style.border = "1px solid #ccc";
+              td.style.padding = "4px 8px";
+
+              // Save changes to tableData on input
+              td.addEventListener("input", () => {
+                const rowIndex = Array.from(tbody.rows).indexOf(tr);
+                const colIndex = Array.from(tr.cells).indexOf(td);
+                tableData[rowIndex][colIndex] = td.textContent || "";
+              });
+
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+        };
+
+        renderTable();
+
+        // Buttons container
+        const controls = document.createElement("div");
+        controls.style.marginTop = "8px";
+        controls.style.display = "flex";
+        controls.style.gap = "8px";
+
+        // Add Row
+        const addRowBtn = document.createElement("button");
+        addRowBtn.textContent = "Add Row";
+        addRowBtn.addEventListener("click", () => {
+          const newRow = Array(columnCount).fill("");
+          tableData.push(newRow);
+          renderTable();
+        });
+
+        // Remove Row
+        const removeRowBtn = document.createElement("button");
+        removeRowBtn.textContent = "Remove Row";
+        removeRowBtn.addEventListener("click", () => {
+          if (tableData.length > 1) {
+            tableData.pop();
+            renderTable();
+          }
+        });
+
+        // Add Column
+        const addColBtn = document.createElement("button");
+        addColBtn.textContent = "Add Column";
+        addColBtn.addEventListener("click", () => {
+          columnCount++;
+          tableData.forEach((row) => row.push(""));
+          renderTable();
+        });
+
+        // Remove Column
+        const removeColBtn = document.createElement("button");
+        removeColBtn.textContent = "Remove Column";
+        removeColBtn.addEventListener("click", () => {
+          if (columnCount > 1) {
+            columnCount--;
+            tableData.forEach((row) => row.pop());
+            renderTable();
+          }
+        });
+
+        // Append buttons
+        controls.append(addRowBtn, removeRowBtn, addColBtn, removeColBtn);
+
+        el.appendChild(table);
+        el.appendChild(controls);
+
+        // Table styling
+        table.style.borderCollapse = "collapse";
+        table.style.width = "100%";
+
+        return el;
+      },
+    },
+    {
       defaultSettings: {
         src: "https://www.w3schools.com/html/mov_bbb.mp4",
         controls: true,
