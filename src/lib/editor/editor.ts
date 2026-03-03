@@ -154,9 +154,37 @@ export class Editor {
     showJsonBtnEl.addEventListener("click", () => {
       this.showJSONModal();
     });
+
+    this.setupSectionReorder();
+  }
+
+  syncFromDOM() {
+    const sectionIds = Array.from(
+      this.editor.querySelectorAll(".editor-section"),
+    ).map((el) => (el as HTMLElement).dataset.sectionId!);
+
+    this.pageData.order = sectionIds;
+
+    sectionIds.forEach((sectionId) => {
+      const sectionEl = this.editor.querySelector(
+        `[data-section-id="${sectionId}"]`,
+      ) as HTMLElement;
+
+      const blockIds = Array.from(
+        sectionEl.querySelectorAll(".editor-block"),
+      ).map((el) => (el as HTMLElement).dataset.blockId!);
+
+      const section = this.pageData.sections[sectionId];
+      if (!section) return;
+
+      section.blocks = blockIds.map(
+        (id) => section.blocks!.find((b) => b.id === id)!,
+      );
+    });
   }
 
   getJSON() {
+    this.syncFromDOM();
     return JSON.stringify(this.pageData, null, 2);
   }
 
@@ -263,38 +291,41 @@ export class Editor {
     sectionEl.draggable = true;
 
     this.setupSectionDrag(sectionEl);
-    this.editor.addEventListener("dragover", (e) => {
-      e.preventDefault();
-
-      const dragging = this.editor.querySelector(".dragging") as HTMLElement;
-      if (!dragging) return;
-
-      // Find section under cursor
-      const afterElement = this.getDragAfterElement(this.editor, e.clientY);
-      if (afterElement == null) {
-        this.editor.appendChild(dragging);
-      } else {
-        this.editor.insertBefore(dragging, afterElement);
-      }
-    });
-
-    this.editor.addEventListener("drop", (e) => {
-      e.preventDefault();
-
-      // Update pageData.order based on new DOM order
-      const sectionIds = Array.from(this.editor.children)
-        .filter((el) => el.classList.contains("editor-section"))
-        .map((el: HTMLElement) => el.dataset.sectionId!);
-
-      this.pageData.order = sectionIds;
-    });
-    // end dragging
 
     sectionEl.addEventListener("click", () => {
       this.selected = { type: "section", id: section.id };
 
       const plugin = getSectionPlugin(section.type);
       if (plugin) this.showSettings(plugin, section.settings);
+    });
+  }
+
+  private setupSectionReorder() {
+    this.editor.addEventListener("dragover", (e) => {
+      e.preventDefault();
+
+      const dragging = this.editor.querySelector(".dragging") as HTMLElement;
+      if (!dragging || !dragging.classList.contains("editor-section")) return;
+
+      const afterElement = this.getDragAfterElement(
+        this.editor,
+        e.clientY,
+        "editor-section",
+      );
+
+      if (!afterElement) {
+        this.editor.appendChild(dragging);
+      } else {
+        this.editor.insertBefore(dragging, afterElement);
+      }
+    });
+
+    this.editor.addEventListener("drop", () => {
+      const sectionIds = Array.from(
+        this.editor.querySelectorAll(".editor-section"),
+      ).map((el) => (el as HTMLElement).dataset.sectionId!);
+
+      this.pageData.order = sectionIds;
     });
   }
 
@@ -370,10 +401,29 @@ export class Editor {
         }
       });
 
+      // wrapper.addEventListener("drop", (e) => {
+      //   e.preventDefault();
+
+      //   const sectionId = blockEl.dataset.sectionId!;
+      //   const section = this.pageData.sections[sectionId];
+      //   if (!section) return;
+
+      //   const blockIds = Array.from(wrapper.children)
+      //     .filter((el) => el.classList.contains("editor-block"))
+      //     .map((el: HTMLElement) => el.dataset.blockId!);
+
+      //   section.blocks = blockIds.map(
+      //     (id) => section.blocks!.find((b) => b.id === id)!,
+      //   );
+      // });
+
       wrapper.addEventListener("drop", (e) => {
         e.preventDefault();
 
-        const sectionId = blockEl.dataset.sectionId!;
+        const sectionEl = wrapper.closest("[data-section-id]") as HTMLElement;
+        if (!sectionEl) return;
+
+        const sectionId = sectionEl.dataset.sectionId!;
         const section = this.pageData.sections[sectionId];
         if (!section) return;
 
