@@ -23,38 +23,12 @@ export class Editor {
     | { type: "block"; id: string }
     | null = null;
 
-  private designMode = true; // toggle this
+  private designMode = false; // toggle this
   private pageData: PageJSON;
 
   constructor(app: HTMLElement) {
     this.app = app;
     this.buildUI();
-
-    // handle design mode events
-    this.editor.addEventListener("click", (e) => {
-      if (!this.designMode) return;
-
-      const target = e.target as HTMLElement;
-
-      // Prevent link navigation
-      if (target.closest("a")) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      // Prevent button actions
-      if (target.closest("button")) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    });
-
-    this.editor.addEventListener("submit", (e) => {
-      if (!this.designMode) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-    });
   }
 
   // Predefined UI interface
@@ -103,7 +77,7 @@ export class Editor {
     const designModeEl = document.createElement("button");
     designModeEl.classList.add("btn");
     designModeEl.id = "design-mode-btn";
-    designModeEl.textContent = "Design Mode";
+    designModeEl.textContent = "Design Mode Enabled";
 
     // create designMode button
     const showJsonBtnEl = document.createElement("button");
@@ -141,10 +115,14 @@ export class Editor {
     this.settingsContainer = settingsContainerEl;
 
     designModeEl.addEventListener("click", () => {
-      this.setDesignMode(!this.designMode);
-      designModeEl.textContent = this.designMode
-        ? "Design Mode"
-        : "Preview Mode";
+      console.log("designModeEl clicked", this.designMode);
+      if (this.designMode) {
+        this.setDesignMode(false);
+        designModeEl.textContent = "Design Mode Enabled";
+      } else {
+        this.setDesignMode(true);
+        designModeEl.textContent = "Preview Mode Enabled";
+      }
     });
 
     deleteEl.addEventListener("click", () => {
@@ -371,6 +349,10 @@ export class Editor {
       wrapper.appendChild(blockEl);
 
       blockEl.addEventListener("click", (e) => {
+        if (!this.designMode) {
+          e.preventDefault();
+        }
+
         e.stopPropagation();
 
         this.selected = { type: "block", id: block.id };
