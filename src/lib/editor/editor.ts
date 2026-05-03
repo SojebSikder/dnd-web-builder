@@ -401,22 +401,6 @@ export class Editor {
         }
       });
 
-      // wrapper.addEventListener("drop", (e) => {
-      //   e.preventDefault();
-
-      //   const sectionId = blockEl.dataset.sectionId!;
-      //   const section = this.pageData.sections[sectionId];
-      //   if (!section) return;
-
-      //   const blockIds = Array.from(wrapper.children)
-      //     .filter((el) => el.classList.contains("editor-block"))
-      //     .map((el: HTMLElement) => el.dataset.blockId!);
-
-      //   section.blocks = blockIds.map(
-      //     (id) => section.blocks!.find((b) => b.id === id)!,
-      //   );
-      // });
-
       wrapper.addEventListener("drop", (e) => {
         e.preventDefault();
 
