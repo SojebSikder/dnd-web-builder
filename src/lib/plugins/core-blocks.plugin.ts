@@ -91,6 +91,7 @@ const CoreBlocksPlugin: EditorPlugin = {
         // Add Row
         const addRowBtn = document.createElement("button");
         addRowBtn.textContent = "Add Row";
+        addRowBtn.classList.add("btn", "btn-primary");
         addRowBtn.addEventListener("click", () => {
           const newRow = Array(columnCount).fill("");
           tableData.push(newRow);
@@ -100,6 +101,7 @@ const CoreBlocksPlugin: EditorPlugin = {
         // Remove Row
         const removeRowBtn = document.createElement("button");
         removeRowBtn.textContent = "Remove Row";
+        removeRowBtn.classList.add("btn", "btn-danger");
         removeRowBtn.addEventListener("click", () => {
           if (tableData.length > 1) {
             tableData.pop();
@@ -110,6 +112,7 @@ const CoreBlocksPlugin: EditorPlugin = {
         // Add Column
         const addColBtn = document.createElement("button");
         addColBtn.textContent = "Add Column";
+        addColBtn.classList.add("btn", "btn-primary");
         addColBtn.addEventListener("click", () => {
           columnCount++;
           tableData.forEach((row) => row.push(""));
@@ -119,6 +122,7 @@ const CoreBlocksPlugin: EditorPlugin = {
         // Remove Column
         const removeColBtn = document.createElement("button");
         removeColBtn.textContent = "Remove Column";
+        removeColBtn.classList.add("btn", "btn-danger");
         removeColBtn.addEventListener("click", () => {
           if (columnCount > 1) {
             columnCount--;

@@ -270,6 +270,17 @@ body {
     border-color: #343a40;
 }
 
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
 /* Optional: add subtle shadow for depth */
 .btn-primary,
 .btn-secondary,
