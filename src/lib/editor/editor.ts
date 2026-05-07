@@ -134,6 +134,7 @@ export class Editor {
     });
 
     this.setupSectionReorder();
+    this.setupBlockReorder();
   }
 
   syncFromDOM() {
@@ -307,6 +308,82 @@ export class Editor {
     });
   }
 
+  private setupBlockReorder() {
+    this.editor.addEventListener("dragover", (e) => {
+      e.preventDefault();
+
+      const dragging = this.editor.querySelector(
+        ".editor-block.dragging",
+      ) as HTMLElement;
+      if (!dragging) return;
+
+      // Find which .editor-blocks wrapper the cursor is currently over
+      const targetWrapper = (e.target as HTMLElement).closest(
+        ".editor-blocks",
+      ) as HTMLElement | null;
+      if (!targetWrapper) return;
+
+      const afterElement = this.getDragAfterElement(
+        targetWrapper,
+        e.clientY,
+        "editor-block",
+      );
+
+      if (!afterElement) {
+        targetWrapper.appendChild(dragging);
+      } else {
+        targetWrapper.insertBefore(dragging, afterElement);
+      }
+    });
+
+    this.editor.addEventListener("drop", (e) => {
+      const dragging = this.editor.querySelector(
+        ".editor-block.dragging",
+      ) as HTMLElement;
+      if (!dragging) return;
+
+      e.stopPropagation();
+
+      const blockId = dragging.dataset.blockId!;
+
+      const targetWrapper = dragging.closest(
+        ".editor-blocks",
+      ) as HTMLElement | null;
+      if (!targetWrapper) return;
+
+      const targetSectionEl = targetWrapper.closest(
+        "[data-section-id]",
+      ) as HTMLElement | null;
+      if (!targetSectionEl) return;
+
+      const targetSectionId = targetSectionEl.dataset.sectionId!;
+
+      let movedBlock: Block | undefined;
+      for (const section of Object.values(this.pageData.sections)) {
+        const idx = section.blocks?.findIndex((b) => b.id === blockId) ?? -1;
+        if (idx === -1) continue;
+        movedBlock = section.blocks!.splice(idx, 1)[0];
+        break;
+      }
+      if (!movedBlock) return;
+
+      const newBlockOrder = Array.from(targetWrapper.children)
+        .filter((el) => el.classList.contains("editor-block"))
+        .map((el) => (el as HTMLElement).dataset.blockId!);
+
+      const insertIdx = newBlockOrder.indexOf(blockId);
+
+      const targetSection = this.pageData.sections[targetSectionId];
+      targetSection.blocks = targetSection.blocks ?? [];
+
+      if (insertIdx === -1) {
+        targetSection.blocks.push(movedBlock);
+      } else {
+        targetSection.blocks.splice(insertIdx, 0, movedBlock);
+      }
+    });
+  }
+
   getDragAfterElement(
     container: HTMLElement,
     y: number,
@@ -330,7 +407,13 @@ export class Editor {
     ).element;
   }
 
-  renderBlocks({ blocks }: { blocks?: Block[] }): HTMLElement {
+  renderBlocks({
+    blocks,
+    sectionId,
+  }: {
+    blocks?: Block[];
+    sectionId: string;
+  }): HTMLElement {
     const wrapper = document.createElement("div");
     wrapper.className = "editor-blocks";
 
@@ -363,44 +446,7 @@ export class Editor {
 
       blockEl.draggable = true;
 
-      this.setupSectionDrag(blockEl);
-
-      wrapper.addEventListener("dragover", (e) => {
-        e.preventDefault();
-
-        const dragging = wrapper.querySelector(".dragging") as HTMLElement;
-        if (!dragging) return;
-
-        const afterElement = this.getDragAfterElement(
-          wrapper,
-          e.clientY,
-          "editor-block",
-        );
-        if (afterElement == null) {
-          wrapper.appendChild(dragging);
-        } else {
-          wrapper.insertBefore(dragging, afterElement);
-        }
-      });
-
-      wrapper.addEventListener("drop", (e) => {
-        e.preventDefault();
-
-        const sectionEl = wrapper.closest("[data-section-id]") as HTMLElement;
-        if (!sectionEl) return;
-
-        const sectionId = sectionEl.dataset.sectionId!;
-        const section = this.pageData.sections[sectionId];
-        if (!section) return;
-
-        const blockIds = Array.from(wrapper.children)
-          .filter((el) => el.classList.contains("editor-block"))
-          .map((el: HTMLElement) => el.dataset.blockId!);
-
-        section.blocks = blockIds.map(
-          (id) => section.blocks!.find((b) => b.id === id)!,
-        );
-      });
+      this.setupBlockDrag(blockEl);
     });
 
     return wrapper;
@@ -410,12 +456,28 @@ export class Editor {
     sectionEl.draggable = true;
 
     sectionEl.addEventListener("dragstart", (e) => {
+      if ((e.target as HTMLElement).classList.contains("editor-block")) return;
+
       sectionEl.classList.add("dragging");
-      e.dataTransfer?.setData("text/plain", sectionEl.dataset.sectionId!);
+      e.dataTransfer?.setData("text/plain", sectionEl.dataset.sectionId ?? "");
     });
 
     sectionEl.addEventListener("dragend", () => {
       sectionEl.classList.remove("dragging");
+    });
+  }
+
+  private setupBlockDrag(blockEl: HTMLElement) {
+    blockEl.draggable = true;
+
+    blockEl.addEventListener("dragstart", (e) => {
+      e.stopPropagation();
+      blockEl.classList.add("dragging");
+      e.dataTransfer?.setData("block-id", blockEl.dataset.blockId ?? "");
+    });
+
+    blockEl.addEventListener("dragend", () => {
+      blockEl.classList.remove("dragging");
     });
   }
 
@@ -560,8 +622,7 @@ export class Editor {
           blockEl.dataset.blockId = block.id;
           blockEl.dataset.blockType = block.type;
 
-          // Re-attach drag for block
-          this.setupSectionDrag(blockEl);
+          this.setupBlockDrag(blockEl);
 
           // Click to select block
           blockEl.addEventListener("click", (e) => {
@@ -619,8 +680,7 @@ export class Editor {
         newEl.dataset.blockId = block.id;
         newEl.dataset.blockType = block.type;
 
-        // Re-attach drag & click
-        this.setupSectionDrag(newEl);
+        this.setupBlockDrag(newEl);
         newEl.addEventListener("click", (e) => {
           e.stopPropagation();
           this.selected = { type: "block", id: block.id };
@@ -687,6 +747,7 @@ export class Editor {
 
     return item;
   }
+
   private setupDropZones() {
     this.editor.addEventListener("dragover", (e) => {
       e.preventDefault();
@@ -782,7 +843,7 @@ export class Editor {
       this.showSettings(plugin, newBlock.settings);
     });
 
-    this.setupSectionDrag(blockEl);
+    this.setupBlockDrag(blockEl);
 
     const sectionEl = this.editor.querySelector(
       `[data-section-id="${sectionId}"]`,
@@ -793,7 +854,7 @@ export class Editor {
     ) as HTMLElement | null;
 
     if (!wrapper) {
-      wrapper = this.renderBlocks({ blocks: [] });
+      wrapper = this.renderBlocks({ blocks: [], sectionId });
       sectionEl.appendChild(wrapper);
     }
 
