@@ -412,7 +412,7 @@ export class Editor {
     sectionId,
   }: {
     blocks?: Block[];
-    sectionId: string;
+    sectionId?: string;
   }): HTMLElement {
     const wrapper = document.createElement("div");
     wrapper.className = "editor-blocks";
