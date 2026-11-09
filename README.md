@@ -1,4 +1,4 @@
-# dnd-web-builder
+# Dnd Web builder
 
 ![Screenshot](./screenshots/screenshot1.png)
 
