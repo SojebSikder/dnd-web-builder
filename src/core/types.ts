@@ -83,7 +83,7 @@ export interface RenderContext {
   renderBlocks(section: SectionNode): string;
   /**
    * Index of the section currently being rendered within the document's visible order
-   * (set by `renderDocument`, or `RenderOptions.index` for `renderSection`). Additive to the spec.
+   * (set by `renderDocument`, or `RenderOptions.index` for `renderSection`).
    */
   sectionIndex?: number;
 }
@@ -134,6 +134,6 @@ export interface RenderOptions {
   mode?: RenderMode;
   data?: Record<string, unknown>;
   globals?: Record<string, unknown>;
-  /** Position of the section in the page (only used by `renderSection`). Additive to the spec. */
+  /** Position of the section in the page (only used by `renderSection`). */
   index?: number;
 }

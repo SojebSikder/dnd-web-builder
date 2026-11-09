@@ -198,7 +198,7 @@ export function renderDocument(
   return `<div class="wb-page">${html}</div>`;
 }
 
-/** Data requests declared by one section (empty for hidden/unknown sections or on error). Additive to the spec. */
+/** Data requests declared by one section (empty for hidden/unknown sections or on error). */
 export function sectionDataRequests(
   section: SectionNode,
   registry: Registry,

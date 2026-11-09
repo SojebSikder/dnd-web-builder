@@ -75,7 +75,7 @@ export class Registry {
     return [...this.blockDefs.values()];
   }
 
-  /** Names of plugins registered with `use()`, in order. Additive to the spec. */
+  /** Names of plugins registered with `use()`, in order. */
   plugins(): string[] {
     return [...this.pluginNames];
   }
