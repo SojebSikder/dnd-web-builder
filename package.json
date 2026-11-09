@@ -1,18 +1,50 @@
 {
-  "name": "web-builder",
-  "private": true,
-  "version": "0.0.0",
+  "name": "dnd-web-builder",
+  "version": "2.0.0",
+  "description": "Framework-agnostic, SSR-safe drag & drop page builder: JSON document model, plugin registry, string renderer and a visual editor.",
   "type": "module",
   "homepage": "https://sojebsikder.github.io/dnd-web-builder",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./editor": {
+      "types": "./dist/editor.d.ts",
+      "import": "./dist/editor.js",
+      "default": "./dist/editor.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./editor.css": "./dist/editor.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "build": "vite build --mode lib && tsc -p tsconfig.build.json && node scripts/postbuild.mjs",
+    "build:demo": "vite build --mode demo",
+    "preview": "vite preview --mode demo",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "npm run build:demo && gh-pages -d dist-demo"
   },
   "devDependencies": {
     "gh-pages": "^6.3.0",
+    "happy-dom": "^21.0.4",
     "typescript": "~5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vitest": "^5.1.0"
   }
 }

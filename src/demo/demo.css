@@ -1,0 +1,32 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#app {
+  height: 100vh;
+}
+
+/* styles for the demo plugin's product cards */
+.wb-demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+}
+.wb-demo-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--wb-radius);
+  background: var(--wb-color-accent);
+}
+.wb-demo-card__title {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.wb-demo-card__price {
+  color: var(--wb-color-muted);
+}
