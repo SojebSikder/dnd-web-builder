@@ -241,19 +241,19 @@ Blocks: `heading`, `text`, `image`, `button`, `quote`, `video`, `spacer`, `icon-
 
 ## Field types
 
-| type                    | stores                  | editor control                                                           |
-| ----------------------- | ----------------------- | ------------------------------------------------------------------------ |
-| `text`, `url`           | string                  | text input                                                               |
-| `textarea`              | string                  | textarea                                                                 |
-| `richtext`              | sanitized HTML          | contenteditable with bold / italic / link / bullet list                  |
-| `number`                | number                  | number input (empty → unset)                                             |
-| `range`                 | number                  | slider + number (`min`/`max`/`step`/`unit`)                              |
-| `boolean`               | boolean                 | switch                                                                   |
-| `select`                | string                  | select (`options`: strings or `{label, value}`)                          |
-| `color`                 | CSS color string        | swatch + text, clearable                                                 |
-| `image`                 | URL string              | preview + URL input, or `pickers.image`                                  |
-| `product`, `collection` | handle string           | text input, or `pickers.product` / `pickers.collection`                  |
-| `list`                  | newline-separated lines | monospace textarea; read with `parseList()` → `string[][]` split on `\|` |
+| type                                | stores                  | editor control                                                               |
+| ----------------------------------- | ----------------------- | ---------------------------------------------------------------------------- |
+| `text`, `url`                       | string                  | text input                                                                   |
+| `textarea`                          | string                  | textarea                                                                     |
+| `richtext`                          | sanitized HTML          | contenteditable with bold / italic / link / bullet list                      |
+| `number`                            | number                  | number input (empty → unset)                                                 |
+| `range`                             | number                  | slider + number (`min`/`max`/`step`/`unit`)                                  |
+| `boolean`                           | boolean                 | switch                                                                       |
+| `select`                            | string                  | select (`options`: strings or `{label, value}`)                              |
+| `color`                             | CSS color string        | swatch + text, clearable                                                     |
+| `image`                             | URL string              | preview + URL input, or `pickers.image`                                      |
+| `product`, `collection`, `category` | handle string           | text input, or `pickers.product` / `pickers.collection` / `pickers.category` |
+| `list`                              | newline-separated lines | monospace textarea; read with `parseList()` → `string[][]` split on `\|`     |
 
 Common options: `group` (`content` / `style` / `advanced`), `default`, `placeholder`, `help`, `visibleIf(settings)`.
 

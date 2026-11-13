@@ -250,10 +250,10 @@ const image: FieldRenderer = (ctx) => {
   );
 };
 
-function handlePicker(kind: "product" | "collection"): FieldRenderer {
+function handlePicker(kind: "product" | "collection" | "category"): FieldRenderer {
   return (ctx) => {
     const input = textInput(ctx, "text", { spellcheck: "false", placeholder: ctx.field.placeholder ?? `${kind}-handle` });
-    const picker = kind === "product" ? ctx.pickers?.product : ctx.pickers?.collection;
+    const picker = ctx.pickers?.[kind];
     const btn = pickerButton("Choose", picker, (v) => {
       input.value = v;
       ctx.onChange(v);
@@ -277,6 +277,7 @@ export const fieldRenderers: Record<FieldType, FieldRenderer> = {
   url,
   product: handlePicker("product"),
   collection: handlePicker("collection"),
+  category: handlePicker("category"),
   list,
 };
 

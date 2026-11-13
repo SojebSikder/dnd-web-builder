@@ -24,6 +24,8 @@ export interface EditorPickers {
   product?: () => Promise<string | null>;
   /** returns a collection handle */
   collection?: () => Promise<string | null>;
+  /** returns a category handle */
+  category?: () => Promise<string | null>;
 }
 
 export interface EditorOptions {

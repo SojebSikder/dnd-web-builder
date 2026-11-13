@@ -36,6 +36,7 @@ export type FieldType =
   | "url"
   | "product"
   | "collection"
+  | "category"
   | "list";
 
 export interface FieldOption {
